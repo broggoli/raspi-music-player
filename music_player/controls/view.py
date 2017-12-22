@@ -1,24 +1,24 @@
-#import display_modules.epd1in54
-import display_modules.Image
+import display_modules.epd1in54 as epd1in54
+import Image
 import ImageDraw
 import ImageFont
+import os
 
 class View(object):
 
-    def __init__(self, batteryPrercentage, displayRotation = 0):
+    def __init__(self, displayRotation = 0):
 
-        self.screenSize = screenSize
-        self.background = Image.open('mp3-player-background.bmp')
+        self.background = Image.open('../raspi-music-player/bitmaps/mp3-player-background.bmp')
+
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 24)
         self.displayRotation = displayRotation
 
         # Creates an image with all pixle set to 255 (white)
         self.clearingImage = Image.new('1', (epd1in54.EPD_WIDTH, epd1in54.EPD_HEIGHT), 255)
-        #self.initialize_screen()
-        draw_battery(batteryPrercentage)
 
-    def initialize_screen(self):
+    def start(self):
         self.draw_background()
+        self.draw_battery(60)
 
     def draw_background(self):
         self.display_full(self.background)
