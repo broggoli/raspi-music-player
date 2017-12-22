@@ -3,7 +3,7 @@
 from time import sleep
 from RPi import GPIO
 
-from controls.volume_control import Volume_control as vContrl
+from controls.volume_control import Volume_control
 from controls.button_interface import Button_interface
 
 class Music_player(object):
@@ -13,15 +13,13 @@ class Music_player(object):
         self.vol = volume
         self.currSongPath = lastSongPath,
         self.view = view
-        self.vol_cntrl = vContrl( volume )
+        self.vol_cntrl = Volume_control( volume, self.set_volume)
 
     def start_loop(self):
         try:
-
             continu = True
             while continu:
                 """ handle Events """
-                self.update_volume()
 
                 sleep(0.001)
 
@@ -30,16 +28,6 @@ class Music_player(object):
 
         #handle Button Presses
         #continu = bi.check_buttons()
-
-    def update_volume(self):
-        """ Updates volume if it changed and return true if it did and False if it didn't. """
-        new_vol = self.vol_cntrl.check_volume()
-
-        if(self.vol != new_vol):
-            self.vol = new_vol
-            return True
-
-        return False
     """
     for i in range (0,11):
         v.draw_battery(100-i*10)

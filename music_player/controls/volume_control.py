@@ -1,5 +1,6 @@
 from RPi import GPIO
 from time import sleep
+import alsaaudio
 
 class Rotary_encoder(object):
     """
@@ -74,12 +75,15 @@ class Volume_control(object):
             min- & max_volume: pretty self explanatory
     """
 
-    def __init__(self, initial_volume, play_pause, min_volume=0, max_volume=100):
+    def __init__(self, initial_volume, min_volume=0, max_volume=100):
         self.volume = initial_volume
         self.minMaxVol = (min_volume, max_volume)
         self.RE = Rotary_encoder(clockPin=27, dataPin=18, switchPin=7,
-                                    self.adjust_volume, play_pause)
-    def adjust_volume(self, clockwise, adjustment_step = 1):
+                                    self.adjust_volume_variable, play_pause)
+
+        self.volume_mixer = alsaaudio.Mixer()
+
+    def adjust_volume_variable(self, clockwise, adjustment_step = 1):
         #If the direction is clockwise -> True -> increase Volume, else decrease Volume
 
         if clockwise:
@@ -91,7 +95,7 @@ class Volume_control(object):
         self.volume = max(self.minMaxVol[0], self.volume)
         self.volume = min(self.volume, self.minMaxVol[1])
 
-        return True
+        #Change the systems Volume
+        self.volume_mixer.setvolume(self.volume)
 
-    def get_volume(self):
-        return self.volume
+        return True

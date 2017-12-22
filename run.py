@@ -18,7 +18,7 @@ def main():
     #lad log
 
     music_player = mp.Music_player(log["volume"], log["lastSongPath"], v)
-    music_player.start_loop()
+    #music_player.start_loop()
 
 if __name__ == "__main__":
     main()
