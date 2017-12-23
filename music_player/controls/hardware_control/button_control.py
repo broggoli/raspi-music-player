@@ -22,8 +22,9 @@ class Button_Control(object):
 
     def stop(self):
         #removes the event detector
-        GPIO.remove_event_detect(self.button)
+        GPIO.remove_event_detect(self.bttn)
 
-    def _callback(self):
+    def _callback(self, pin):
+        print("callback from pin:", pin)
         if GPIO.input(self.bttn) == 0:
             self.callback()

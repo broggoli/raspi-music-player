@@ -7,6 +7,7 @@ class Song_Control(object):
         self.currentSong = lastSongPath
 
     def play_pause(self):
+        
         if self.isPaused:
             print("Play!")
             self.isPaused = False

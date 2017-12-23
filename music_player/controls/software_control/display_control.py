@@ -1,10 +1,9 @@
-import display_modules.epd1in54 as epd1in54
+from .display_modules import epd1in54
 import Image
 import ImageDraw
 import ImageFont
-import os
 
-class View(object):
+class Display_Control(object):
 
     def __init__(self, displayRotation = 0):
 
@@ -20,13 +19,17 @@ class View(object):
         self.draw_background()
         self.draw_battery(60)
 
+    def stop(stop):
+        #just don't draw anything anymore, maybe usful later on
+        pass
+
     def draw_background(self):
-        self.display_full(self.background)
+        self.draw_full(self.background)
 
     def draw_battery(self, batteryPrercentage):
         """Draws the given battery status in the battery indicator"""
 
-        #setup
+        #setup battery dimensions on screen
         batteryW = 34
         batteryH = 10
 
@@ -41,9 +44,9 @@ class View(object):
         draw.rectangle((0, 0, fullW, batteryH), fill = 0)
 
         #draw to screen
-        self.display_partial(batteryImage, 154, 12)
+        self.draw_partial(batteryImage, 154, 12)
 
-    def display_full(self, image):
+    def draw_full(self, image):
         epd = epd1in54.EPD()
         epd.init(epd.lut_full_update)
         #Display full frame
@@ -52,7 +55,7 @@ class View(object):
         epd.set_frame_memory(image.rotate(self.displayRotation), 0, 0)
         epd.display_frame()
 
-    def display_partial(self, image, x, y):
+    def draw_partial(self, image, x, y):
         epd = epd1in54.EPD()
         epd.init(epd.lut_partial_update)
         epd.set_frame_memory(image, x, y)
@@ -64,11 +67,15 @@ class View(object):
         # space from top = 195 px
 
         flashingImage = Image.new('1', (50, 5), 0)
-        self.display_partial(flashingImage, 75, 195)
+        self.draw_partial(flashingImage, 75, 195)
         flashingImage = Image.new('1', (50, 5), 255)
-        self.display_partial(flashingImage, 75, 195)"""
+        self.draw_partial(flashingImage, 75, 195)
+    """
 
 class Window(object):
 
     def __init__(self):
         self.size = (148, 180)
+
+    def draw_window(self):
+        pass
