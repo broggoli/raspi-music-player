@@ -1,5 +1,7 @@
 {
-    "lastSongPath": "path/to/file",
+    "music_dir": "../mp3",
+    "last_playlist": "testplaylist",
+    "last_song": "test2",
     "lastFaceDisplayed": "songDetailView",
     "volume": 60
 }

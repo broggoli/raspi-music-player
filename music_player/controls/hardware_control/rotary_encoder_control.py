@@ -12,7 +12,8 @@ class Rotary_Encoder_Control(object):
 
     def __init__(self, clockPin, dataPin,
                 rotaryCallback,
-                rotaryBouncetime=50):
+                secondCallback,
+                rotaryBouncetime = 50):
         #These two GPIO Pins encodes the rotation
         self.clk = clockPin
         self.dt = dataPin
@@ -20,6 +21,7 @@ class Rotary_Encoder_Control(object):
         #Setting the callbacks
         #Saving the callback functions that are called when an even occurs
         self.rotaryCallback = rotaryCallback
+        self.secondCallback = secondCallback
         #Setting the bounce time
         self.rotaryBouncetime = rotaryBouncetime
 
@@ -45,6 +47,6 @@ class Rotary_Encoder_Control(object):
         clkState = GPIO.input(self.clk)
         if clkState == 0:
             if GPIO.input(self.dt) != clkState:
-                self.rotaryCallback(False)
+                self.rotaryCallback(False, self.secondCallback)
             else:
-                self.rotaryCallback(True)
+                self.rotaryCallback(True, self.secondCallback)
