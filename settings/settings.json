@@ -2,6 +2,26 @@
     "music_dir": "../mp3",
     "last_playlist": "testplaylist",
     "last_song": "test2",
-    "lastFaceDisplayed": "songDetailView",
-    "volume": 60
+    "volume": 60,
+    "GPIO_Pins":
+    [{
+        "name": "NEXT_SONG_BUTTON_PIN",
+        "pinNr": 26
+      },
+      {
+        "name": "PREVIOUS_SONG_BUTTON_PIN",
+        "pinNr": 20
+      },
+      {
+        "name": "PLAY_PAUSE_PIN",
+        "pinNr": 16
+      },
+      {
+        "name": "CLOCK_PIN",
+        "pinNr": 27
+      },
+      {
+        "name": "DATA_PIN",
+        "pinNr": 18
+      }]
 }

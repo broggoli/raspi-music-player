@@ -1,7 +1,6 @@
 """ Music player app"""
 
 from time import sleep
-import json
 from RPi import GPIO
 
 #importing the hrdware controls
@@ -12,6 +11,7 @@ from .controls.hardware_control.rotary_encoder_control import Rotary_Encoder_Con
 from .controls.software_control.song_control import Song_Control
 from .controls.software_control.volume_control import Volume_Control
 from .controls.software_control.view import View
+from load_settings import Load_Settings
 
 class Music_player(object):
     """
@@ -22,36 +22,26 @@ class Music_player(object):
     def __init__(self):
         #Setting up all the GPIO pins
 
-        #Individual button
-        NEXT_SONG_BUTTON_PIN = 26
-        #Individual button
-        PREVIOUS_SONG_BUTTON_PIN = 20
-        #This is the button of the rotary encoder
-        PLAY_PAUSE_PIN = 16
-        #Rotary_Encoder Buttons -> encode the rotation of the dial
-        CLOCK_PIN = 27
-        DATA_PIN = 18
-
         #loading the settings
-        self.settings = json.load(open("../raspi-music-player/settings/settings.json"))
-        lastSongPath = self.settings["music_dir"] + self.settings["last_playlist"] + self.settings["last_song"]
+        self.settings, self.pins, self.lastSongPath = Load_Settings().get_settings()
 
         #setting up the display
         self.view = View()
         #setting up the volume control dial -> is also the play&pause button
         self.volume_control = Volume_Control( self.settings["volume"])
-        self.song_control = Song_Control(lastSongPath)
+        self.view.volume_view.show(self.settings["volume"])
+        self.song_control = Song_Control(self.lastSongPath)
 
         #Setting up the hardware components and tieing them to the respective function
-        self.volume_control_dial = Rotary_Encoder_Control(CLOCK_PIN, DATA_PIN,
+        self.volume_control_dial = Rotary_Encoder_Control(self.pins["CLOCK_PIN"], self.pins["DATA_PIN"],
                                                             self.volume_control.change_volume,
                                                             self.view.volume_view.show)
         #setting up the song control buttons
-        self.next_song_button = Button_Control(NEXT_SONG_BUTTON_PIN,
+        self.next_song_button = Button_Control(self.pins["NEXT_SONG_BUTTON_PIN"],
                                             self.song_control.next_song)
-        self.previous_song_button = Button_Control(PREVIOUS_SONG_BUTTON_PIN,
+        self.previous_song_button = Button_Control(self.pins["PREVIOUS_SONG_BUTTON_PIN"],
                                             self.song_control.previous_song)
-        self.play_pause_button = Button_Control(PLAY_PAUSE_PIN,
+        self.play_pause_button = Button_Control(self.pins["PLAY_PAUSE_PIN"],
                                             self.song_control.play_pause,
                                             pullDown=False)
     def start(self):
