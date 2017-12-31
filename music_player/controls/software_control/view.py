@@ -70,5 +70,6 @@ class View(Display_Control):
         self.volume_view = Volume_View(size = (40, 20),  position = (5, 180))
 
 
-    def start(self):
+    def start(self, settings):
         self.draw_background()
+        self.volume_view.show(settings["volume"])

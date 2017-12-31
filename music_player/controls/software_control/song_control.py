@@ -7,7 +7,7 @@ class Song_Control(object):
         self.currentSong = lastSongPath
 
     def play_pause(self):
-        
+
         if self.isPaused:
             print("Play!")
             self.isPaused = False
@@ -25,3 +25,10 @@ class Song_Control(object):
 
     def get_play_state(self):
         return self.isPaused
+
+    def fast_forward(self):
+        """ for now just mockup"""
+        print("Fast forward!")
+    def rewind(self):
+        """ for now just mockup"""
+        print("Rewind!")

@@ -33,8 +33,6 @@ class Playlist(Playlist_Manager):
         self.musicDir = musicDir
         self.playlist = self.makePlaylist()
 
-
-
     def makePlaylist(self):
         songList = []
         for playlist in self.songTree:
@@ -46,5 +44,3 @@ class Playlist(Playlist_Manager):
         if self.shuffle:
             shuffle(songList)
         return songList
-p = Playlist("../../mp3", "playlist1")
-print(p.playlist)

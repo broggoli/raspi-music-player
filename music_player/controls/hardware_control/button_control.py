@@ -1,18 +1,23 @@
 from RPi import GPIO
 from time import sleep
+from datetime import datetime
+from threading import Thread
 
 class Button_Control(object):
 
     def __init__(self, buttonPin,
-                callback,
+                shortClickCallback,
+                longClickCallback = None,
                 bouncetime=200,
                 pullDown=True):
         #Setting the button's GPIO pin number
         self.bttn = buttonPin
+        self.threadCounter = 0
         self.pullDown = pullDown
 
         #Setting the callbacks
-        self.callback = callback
+        self.shortClickCallback = shortClickCallback
+        self.longClickCallback = longClickCallback
         self.bouncetime = bouncetime
         #setting the GPIO pins up
         GPIO.setmode(GPIO.BCM)
@@ -38,6 +43,31 @@ class Button_Control(object):
 
     def _callback(self, pin):
         #print("callback from pin:", pin, GPIO.input(self.bttn))
+        t = Thread(target=self.determin_push_length)
+        t.start()
+
+    def determin_push_length(self, longPushTime = 1):
+
         inpt = GPIO.input(self.bttn)
-        if (self.pullDown and inpt == 1) or (not self.pullDown and inpt == 0):
-            self.callback()
+        pressed = (self.pullDown and inpt == 1) or (not self.pullDown and inpt == 0)
+        sleepTime = 0.02
+        start = datetime.now()
+        self.threadCounter += 1
+        if self.threadCounter == 1 and pressed:
+            if self.longClickCallback:
+                while pressed:
+                    sleep(sleepTime)
+                    timeElapsed = (datetime.now() - start).seconds
+                    inpt = GPIO.input(self.bttn)
+                    #print(timeElapsed, self.threadCounter, pressed)
+                    if timeElapsed >= longPushTime:
+                            self.longClickCallback()
+                            sleep(0.5)
+                    pressed = (self.pullDown and inpt == 1) or (not self.pullDown and inpt == 0)
+                else:
+                    if timeElapsed < longPushTime:
+                        self.shortClickCallback()
+            else:
+                print("No long click callback defined!")
+                self.shortClickCallback()
+        self.threadCounter -= 1
