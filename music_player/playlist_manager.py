@@ -26,21 +26,25 @@ class Playlist_Manager(object):
 
 class Playlist(Playlist_Manager):
 
-    def __init__(self, musicDir, playlistDir, shuffle = False):
+    def __init__(self, musicDir, playlistDir=None, shuffle = False):
         super(Playlist, self).__init__(musicDir)
-        self.playlistDir = playlistDir
         self.shuffle = shuffle
         self.musicDir = musicDir
-        self.playlist = self.makePlaylist()
+        self.list = self.makePlaylist(playlistDir)
 
-    def makePlaylist(self):
+    def makePlaylist(self, playlistDir):
         songList = []
         for playlist in self.songTree:
             if playlist != 0:
                 for song in self.songTree[playlist]:
-                    if song != 0 and song != "" and self.songTree[playlist][0] == self.playlistDir:
+                    if song != 0 and song != "" and (self.songTree[playlist][0] == playlistDir or None):
                         songList.append("%s/%s/%s.mp3"
                             %(self.musicDir,playlist,self.songTree[playlist][song]))
         if self.shuffle:
             shuffle(songList)
         return songList
+
+class Playlist_Visual(Playlist_Manager):
+
+    def __init__(self, musicDir):
+        super(Playlist, self).__init__(musicDir)

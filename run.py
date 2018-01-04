@@ -1,5 +1,6 @@
 """ launcher program for the music player """
 import music_player.music_player as mp
+from RPi import GPIO
 
 def main():
     try:

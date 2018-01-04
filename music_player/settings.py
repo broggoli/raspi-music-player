@@ -5,13 +5,16 @@ class Load_Settings(object):
     def __init__(self, settingsPath = "../raspi-music-player/settings/settings.json"):
         self.settings = json.load(open(settingsPath))
         self.pins = self.get_pin_dict()
-        self.lastSongPath = self.get_last_song_path()
 
     def get_settings(self):
-        return self.settings, self.pins, self.lastSongPath
+        return self.settings, self.pins
 
     def get_last_song_path(self):
-        parts = (self.settings["musicDir"], self.settings["lastPlaylist"], self.settings["lastSong"])
+        parts = (self.get_last_playlist(), self.settings["lastSong"])
+        return "/".join(parts)
+
+    def get_last_playlist(self):
+        parts = (self.settings["musicDir"], self.settings["lastPlaylist"])
         return "/".join(parts)
 
     def get_pin_dict(self):

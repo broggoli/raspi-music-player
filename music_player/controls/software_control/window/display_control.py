@@ -34,5 +34,7 @@ class Display_Control(object):
 
     def draw_partial(self, image, x, y):
         self.epd.init(self.epd.lut_partial_update)
-        self.epd.set_frame_memory(image, x, y)
+        self.epd.set_frame_memory(image.rotate(self.displayRotation), x, y)
+        self.epd.display_frame()
+        self.epd.set_frame_memory(image.rotate(self.displayRotation), x, y)
         self.epd.display_frame()
