@@ -43,8 +43,3 @@ class Playlist(Playlist_Manager):
         if self.shuffle:
             shuffle(songList)
         return songList
-
-class Playlist_Visual(Playlist_Manager):
-
-    def __init__(self, musicDir):
-        super(Playlist, self).__init__(musicDir)

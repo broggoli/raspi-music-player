@@ -29,7 +29,7 @@ class Music_player(object):
 
         self.view = View(self.settings, self.playlist)
 
-        self.action_control = Action_Control(self.lSettings, self.playlist)
+        self.action_control = Action_Control(self.lSettings, self.view)
 
         print(self.playlist.list)
 

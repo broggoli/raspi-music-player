@@ -8,6 +8,7 @@ class Display_Control(object):
     def __init__(self, displayRotation = 0):
 
         self.background = Image.open('../raspi-music-player/bitmaps/mp3-player-background.bmp')
+        #self.gray-bg = Image.open('../raspi-music-player/bitmaps/gray-background.bmp')
 
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 24)
         self.displayRotation = displayRotation
@@ -19,6 +20,13 @@ class Display_Control(object):
     def stop(stop):
         #just don't draw anything anymore, maybe usful later on
         pass
+
+    def get_gray_background(self, size):
+        width, height = size
+        background = Image.new('1', (width, height), 255)
+        for i in range(int(height/2)):
+            background.paste(Image.open('../raspi-music-player/bitmaps/gray-background.bmp'), (0, i*2))
+        return background
 
     def draw_background(self):
         self.draw_full(self.background)
