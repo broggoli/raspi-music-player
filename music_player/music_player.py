@@ -7,7 +7,7 @@ from controls.action_control import Action_Control
 #importing the software controls
 from settings import Load_Settings
 from settings import Save_Settings
-from playlist_manager import Playlist
+from list_manager import Dir_List
 from controls.software_control.view import View
 
 class Music_player(object):
@@ -25,6 +25,9 @@ class Music_player(object):
         self.lSettings.print_pins()
         self.settings, self.pins = self.lSettings.get_settings()
 
+        self.volume = self.settings["volume"]
+
+        self.dirList = Dir_List(self.settings["musicDir"], self.settings["lastDir"])
         self.playlist = Playlist(self.settings["musicDir"], self.settings["lastPlaylist"])
 
         self.view = View(self.settings, self.playlist)
@@ -46,7 +49,7 @@ class Music_player(object):
 
     def stop(self):
         self.action_control.stop()
-        #self.sSettings.save(60, "The Kooks - Naive", "playlist1")
+        #self.sSettings.save(self.volume, "The Kooks - Naive", "playlist1")
         print("Stopped!")
 
     def start_loop(self):
