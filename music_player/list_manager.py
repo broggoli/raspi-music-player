@@ -1,5 +1,5 @@
 import os
-from random import shuffle
+from random import random
 
 class List_Manager(object):
 
@@ -12,7 +12,8 @@ class List_Manager(object):
         if dirName:
             tree = {0 : dirName}
         else:
-            tree = {0: "root"}
+            #The top directory is called "All your music" in swiss german
+            tree = {0: "Alli dini Lieder"}
 
         dirList = os.listdir(directory)
         firstSong = True
@@ -24,7 +25,7 @@ class List_Manager(object):
                 if firstSong:
                     tree["songs"] = [dirName]
                     firstSong = False
-                tree["songs"].append(d.split(".")[0])
+                tree["songs"].append(d)
         return tree
 
 class Dir_List(List_Manager):
@@ -33,11 +34,19 @@ class Dir_List(List_Manager):
         super(Dir_List, self).__init__(rootDir)
         self.rootDir = rootDir
         self.directory = directory
+        
+        if directory == "":
+            self.name = "Alli dini Lieder"
+        else:
+            self.name = self.directory
 
     def get_list(self, tree=None, firstCall=True, found=False):
-
+        """ recursively searches through the given directory and returns a tree
+            of dictionaries with all the songs listed """
         if firstCall:
             tree = self.songTree
+        if self.directory == "":
+            return tree
         if not found:
             for branch in tree:
                 if branch > 0:
@@ -52,18 +61,34 @@ class Dir_List(List_Manager):
                 print("No such Directory!")
             return tree
 
+    def get_top_branches(self):
+        l = self.get_list()
+        topBranches = []
+        for branch in l:
+            if not representsInt(branch):
+                topBranches.append(branch)
+        return topBranches
+
 class Playlist():
 
-    def __init__(self, rootDir, directory, shuffle = False):
-        self.dirList = Dir_List(rootDir, directory).get_list()
-        self.directory = rootDir
+    def __init__(self, dir_list, shuffle = False):
+        self.dirList = dir_list.get_list()
+        self.shuffle = shuffle
+
         if self.dirList != None:
             self.name = self.dirList[0]
         else:
             self.name = "Unknown"
-        self.shuffle = shuffle
-        self.list = self.makePlaylist(self.dirList, self.directory)
 
+        self.list, self.paths = self.makePlaylist(self.dirList, dir_list.directory)
+        self.songs = self.raw_to_song_display_name(self.order(self.list))
+
+    def order(self, l):
+        if self.shuffle:
+            shuffled = sorted(l, key=lambda k: random())
+            return shuffled
+        else:
+            return sorted(l)
     def makePlaylist(self, l, path = ""):
         """ returns a list of all the songs and a list wit hall the paths in the directory (also sub dirs) """
         if l:
@@ -75,13 +100,29 @@ class Playlist():
                         songList.extend(i)
                         pathList.append(path+"/"+l[0])
                     else:
-                        print(l[0])
                         s, p = self.makePlaylist(l[item], path+"/"+l[0])
+                        #song_name = self.raw_to_song_display_name(s)
                         songList.extend(s)
                         pathList.extend(p)
             return songList, pathList
         else:
             return None
 
-playlist = Playlist("../../mp3", "playlist1")
-print(playlist.list)
+    def raw_to_song_display_name(self, rawNames):
+        """ returns the song name without the '.mp3' and the song number, if there is one"""
+        cleanNames = []
+        for rawName in rawNames:
+            nameParts = rawName.split(".")
+            print(rawName)
+            for part in nameParts:
+                if part != "mp3" and not representsInt(part):
+                    cleanNames.append(part.strip(" "))
+        return cleanNames
+
+#Helper functions
+def representsInt(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False

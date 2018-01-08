@@ -1,8 +1,10 @@
 {
     "musicDir": "../mp3",
-    "lastDir": "The Kooks",
-    "lastSong": "test2",
+    "lastDir": "",
+    "songView": "False",
+    "lastSongIndex": 0,
     "volume": 60,
+    "songInterruptTime": 0,
     "GPIOpins":
     [{
         "name": "NEXT_SONG_BUTTON_PIN",

@@ -5,9 +5,8 @@ from RPi import GPIO
 
 from controls.action_control import Action_Control
 #importing the software controls
-from settings import Load_Settings
-from settings import Save_Settings
-from list_manager import Dir_List
+from settings import Settings
+import list_manager as lm
 from controls.software_control.view import View
 
 class Music_player(object):
@@ -19,22 +18,22 @@ class Music_player(object):
     def __init__(self):
         self.shutDown = False
 
-        #loading the settings
-        self.lSettings = Load_Settings()
-        self.sSettings = Save_Settings()
-        self.lSettings.print_pins()
-        self.settings, self.pins = self.lSettings.get_settings()
+        #loading the settings from the json file
+        self.settings = Settings()
+        self.settings.print_pins()
+        self.settingsDict, self.pins = self.settings.load()
 
-        self.volume = self.settings["volume"]
+        self.dir_list = lm.Dir_List(self.settingsDict["musicDir"], self.settingsDict["lastDir"])
+        self.playlist = lm.Playlist(self.dir_list)
 
-        self.dirList = Dir_List(self.settings["musicDir"], self.settings["lastDir"])
-        self.playlist = Playlist(self.settings["musicDir"], self.settings["lastPlaylist"])
+        if self.settingsDict["songView"] == "True":
+            listToDisplay, listName = self.playlist.songs, self.playlist.name
+        else:
+            listToDisplay, listName = self.dir_list.get_top_branches(), self.dir_list.name
 
-        self.view = View(self.settings, self.playlist)
+        self.view = View(self.settingsDict, (listToDisplay, listName))
+        self.action_control = Action_Control(self.settings, self.view)
 
-        self.action_control = Action_Control(self.lSettings, self.view)
-
-        print(self.playlist.list)
 
 
     def start(self):
@@ -49,7 +48,7 @@ class Music_player(object):
 
     def stop(self):
         self.action_control.stop()
-        #self.sSettings.save(self.volume, "The Kooks - Naive", "playlist1")
+        #self.settings.save(self.volume, "The Kooks - Naive", "playlist1")
         print("Stopped!")
 
     def start_loop(self):

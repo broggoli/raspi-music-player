@@ -10,18 +10,18 @@ from time import sleep
 
 class Action_Control(object):
 
-    def __init__(self, lSettings, view):
-        self.lSettings = lSettings
+    def __init__(self, settings, view):
+        self.settings = settings
         self.view = view
 
-        self.settings, self.pins = self.lSettings.get_settings()
+        self.settingsDir, self.pins = self.settings.load()
 
         self.currentlyPressed = {}
         self.longPushTime = 1
 
         #setting up the volume control dial -> is also the play&pause button
-        self.volume_control = Volume_Control( self.settings["volume"])
-        self.song_control = Song_Control(self.lSettings.get_last_song_path())
+        self.volume_control = Volume_Control( self.settingsDir["volume"])
+        self.song_control = Song_Control(self.settings.get_last_song_path())
 
         #Setting up the hardware components and tieing them to the respective function
         self.volume_control_dial = Rotary_Encoder_Control(self.pins["CLOCK_PIN"], self.pins["DATA_PIN"],
@@ -99,8 +99,10 @@ class Action_Control(object):
             self.shut_down()
         elif inpt == "n":
             self.song_control.next_song()
-        elif inpt == "m":
+            self.view.update_list(self.view.list_visual.select(nextSong = True))
+        elif inpt == "b":
             self.song_control.previous_song()
+            self.view.update_list(self.view.list_visual.select(nextSong = False))
         elif inpt == "p":
             self.song_control.play_pause()
         elif inpt == "r":
