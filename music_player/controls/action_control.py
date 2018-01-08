@@ -21,7 +21,7 @@ class Action_Control(object):
 
         #setting up the volume control dial -> is also the play&pause button
         self.volume_control = Volume_Control( self.settingsDir["volume"])
-        self.song_control = Song_Control(self.settings.get_last_song_path())
+        self.song_control = Song_Control()
 
         #Setting up the hardware components and tieing them to the respective function
         self.volume_control_dial = Rotary_Encoder_Control(self.pins["CLOCK_PIN"], self.pins["DATA_PIN"],
@@ -98,20 +98,18 @@ class Action_Control(object):
         if inpt == "q":
             self.shut_down()
         elif inpt == "n":
-            self.song_control.next_song()
             self.view.list_visual.select(nextSong = True)
         elif inpt == "b":
-            self.song_control.previous_song()
             self.view.list_visual.select(nextSong = False)
         elif inpt == "p":
-            self.song_control.play_pause()
             self.view.list_visual.change_list(down=True)
+        elif inpt == "o":
+            self.view.list_visual.change_list(down=False)
         elif inpt == "r":
             self.view.start()
         elif representsInt(inpt):
             self.volume_control.set_volume(int(inpt)*10,
             self.view.update_volume_view)
-
         self.view.update_view()
 #Helper functions
 def representsInt(s):

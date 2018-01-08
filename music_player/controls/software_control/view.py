@@ -2,7 +2,6 @@ from .window.display_control import Display_Control
 import ImageDraw
 import Image
 import ImageFont
-import math
 
 class Window(Display_Control):
 
@@ -60,12 +59,13 @@ class Battery_Indicator(Window):
 class List_Title(Window):
 
     def __init__(self, size, position):
-        super(Breadcrum, self).__init__(size, position, fontSize=16)
+        super(List_Title, self).__init__(size, position, fontSize=16)
         self.s = (self.sizeX, self.sizeY)
         self.list_title_image = Image.new('1', (self.sizeX, self.sizeY), 255)
 
     def get_image(self, breadcrum):
         draw = ImageDraw.Draw(self.list_title_image)
+        draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
         draw.text((5, 1), breadcrum, font = self.f, fill = 0)
         draw.line((0, self.sizeY-2, self.sizeX, self.sizeY-2), fill = 0, width=2)
 
@@ -79,6 +79,7 @@ class Page_Counter(Window):
 
     def get_image(self, scrollInfo):
         draw = ImageDraw.Draw(self.page_counter_image)
+        draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
         pageCounterText = "%i/%i" % scrollInfo
         draw.text((0, 0), pageCounterText, font = self.f, fill = 0)
 
@@ -105,7 +106,7 @@ class Scroll_Bar(Window):
         draw = ImageDraw.Draw(self.scroll_bar_image)
         draw.rectangle((self.margin, self.margin, width, height), fill = 255)
 
-        draw.rectangle((2 * self.margin, yPos, pedalWidth, pedalHeight), fill = 0)
+        draw.rectangle((2 * self.margin, yPos, pedalWidth, yPos+pedalHeight), fill = 0)
 
         return self.scroll_bar_image
 
@@ -166,7 +167,7 @@ class View(Display_Control):
         self.paint(imageList)
 
     def update_volume_view(self, volume):
-        return [    (self.volume_view.get_image(volume), self.volume_view.position)     ])
+        return [    (self.volume_view.get_image(volume), self.volume_view.position)     ]
 
     def update_list(self, newList=None):
         if newList:
@@ -174,14 +175,12 @@ class View(Display_Control):
 
         scrollInfo = self.list_visual.get_scroll_info()
 
-        lv, cs = self.list_visual.visibleList, self.list_visual.currentlySelected
-
-        print(scrollInfo, vl, cs)
-
+        vl, ch = self.list_visual.visibleList, self.list_visual.highlited
+        print(vl, ch, scrollInfo)
         imageList = [
-                        (self.main_window.get_image(lv, cs), self.main_window.position),
+                        (self.main_window.get_image(vl, ch), self.main_window.position),
                         (self.scroll_bar.get_image(scrollInfo), self.scroll_bar.position),
                         (self.page_counter.get_image(scrollInfo), self.page_counter.position),
-                        (self.list_title.get_image(self.list_visual.currentListName), self.list_title.position)
+                        (self.list_title.get_image(self.list_visual.listName), self.list_title.position)
                     ]
         return imageList

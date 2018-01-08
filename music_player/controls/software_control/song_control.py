@@ -1,10 +1,9 @@
 
 class Song_Control(object):
 
-    def __init__(self, lastSongPath):
+    def __init__(self):
         #initially the song is paused
         self.isPaused = True
-        self.currentSong = lastSongPath
 
     def play_pause(self):
 
