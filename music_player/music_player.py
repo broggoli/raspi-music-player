@@ -23,18 +23,10 @@ class Music_player(object):
         self.settings.print_pins()
         self.settingsDict, self.pins = self.settings.load()
 
-        self.dir_list = lm.Dir_List(self.settingsDict["musicDir"], self.settingsDict["lastDir"])
-        self.playlist = lm.Playlist(self.dir_list)
+        self.list_visual = lm.List_Visual(self.settingsDict)
 
-        if self.settingsDict["songView"] == "True":
-            listToDisplay, listName = self.playlist.songs, self.playlist.name
-        else:
-            listToDisplay, listName = self.dir_list.get_top_branches(), self.dir_list.name
-
-        self.view = View(self.settingsDict, (listToDisplay, listName))
+        self.view = View(self.settingsDict, self.list_visual)
         self.action_control = Action_Control(self.settings, self.view)
-
-
 
     def start(self):
         #starting the event listeners

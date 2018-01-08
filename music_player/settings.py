@@ -21,15 +21,7 @@ class Settings(object):
 
             with open(self.settingsPath, 'w') as f:
                 json.dump(self.newSettings, f)
-
-    def get_last_song_path(self):
-        parts = (self.get_last_playlist(), self.settings["lastSongIndex"])
-        return "/"
-
-    def get_last_playlist(self):
-        parts = (self.settings["musicDir"], self.settings["lastDir"])
-        return "/".join(parts)
-
+                
     def get_pin_dict(self):
         pin_dict = {}
         for pin in self.settings["GPIOpins"]:

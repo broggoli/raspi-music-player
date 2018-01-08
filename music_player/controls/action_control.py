@@ -99,17 +99,20 @@ class Action_Control(object):
             self.shut_down()
         elif inpt == "n":
             self.song_control.next_song()
-            self.view.update_list(self.view.list_visual.select(nextSong = True))
+            self.view.list_visual.select(nextSong = True)
         elif inpt == "b":
             self.song_control.previous_song()
-            self.view.update_list(self.view.list_visual.select(nextSong = False))
+            self.view.list_visual.select(nextSong = False)
         elif inpt == "p":
             self.song_control.play_pause()
+            self.view.list_visual.change_list(down=True)
         elif inpt == "r":
             self.view.start()
         elif representsInt(inpt):
             self.volume_control.set_volume(int(inpt)*10,
             self.view.update_volume_view)
+
+        self.view.update_view()
 #Helper functions
 def representsInt(s):
     try:
