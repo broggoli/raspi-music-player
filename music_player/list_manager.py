@@ -44,22 +44,17 @@ class Dir_List(List_Manager):
         self.set_dir(directory)
 
     def set_name(self):
-        if self.directory == "":
-            self.name = "Alli dini Lieder"
-        else:
-            self.name = self.directory
+        self.name = "Alli dini Lieder" if self.directory == "" else self.directory
 
     def set_dir(self, directory=None, path=None):
         if directory != None:
             self.directory = directory
             self.pathToCurrentDir = self.get_path(pathSoFar=[])
+            self.dirTree = self.getTreeFromPath(self.pathToCurrentDir)
         else:
             self.directory = path[-1]
             self.pathToCurrentDir = path
-        #A bit inefficient, which hurts my programmer heart, but don't have time to find a more elegant solution
-        #just searches the whole Tree again
-        print("path",self.pathToCurrentDir)
-        self.dirTree = self.getTreeFromPath(self.pathToCurrentDir)
+            self.dirTree = self.dirTree[self.directory]
         self.set_name()
 
     def moveOneUp(self):
