@@ -151,7 +151,10 @@ class List_Visual(object):
         self.setupNewList(self.settingsDict["lastSongIndex"])
 
     def currentList(self):
-        return self.dir_list.get_top_branches()
+        l = self.dir_list.get_top_branches()
+        if "songs" in l and len(l) <= 2:
+            return self.dir_list["songs"]
+        return self.dir_list.get_top_branches()[1:]
 
     def amount_pages(self):
         self.totalPages = int(math.ceil(len(self.currentList()) / self.itemsPerPage)) + 1
@@ -171,7 +174,8 @@ class List_Visual(object):
 
     def visible_list(self, proposedSelected):
 
-        proposedSelected = min(len(self.currentList())-2, proposedSelected)
+        # Limit the maximal selectable index to the last index of the list
+        proposedSelected = min(len(self.currentList())-1, proposedSelected)
         proposedSelected = max(0, proposedSelected)
 
         self.currentPage = int(math.floor(proposedSelected/self.itemsPerPage) + 1)
@@ -181,7 +185,7 @@ class List_Visual(object):
         lastItemIndex =  self.itemsPerPage * self.currentPage - 1
         self.highlited = self.currentlySelected % self.itemsPerPage
 
-        self.visibleList = [item for index, item in enumerate(self.currentList()[1:])
+        self.visibleList = [item for index, item in enumerate(self.currentList())
                 if index >= firstItemIndex and
                 index <= lastItemIndex]
 
@@ -191,7 +195,7 @@ class List_Visual(object):
         elif not down == None:
             if down == True:
                 #make the currently selected item the new directory
-                directory = self.currentList()[self.currentlySelected+1]
+                directory = self.currentList()[self.currentlySelected]
                 self.dir_list.moveOneDown(directory)
             else:
                 self.dir_list.moveOneUp()

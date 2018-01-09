@@ -4,7 +4,7 @@ class Settings(object):
 
     def __init__(self, settingsPath = "../raspi-music-player/settings/settings.json"):
         self.settingsPath = settingsPath
-        self.settings = json.load(open(self.settingsPath))
+        self.settings = json.load(open(self.settingsPath), encoding="utf-8")
         self.pins = self.get_pin_dict()
 
     def load(self):
@@ -20,8 +20,8 @@ class Settings(object):
                 self.settings["lastDir"] = currentDir
 
             with open(self.settingsPath, 'w') as f:
-                json.dump(self.newSettings, f)
-                
+                json.dump(self.newSettings, f, ensure_ascii=False)
+
     def get_pin_dict(self):
         pin_dict = {}
         for pin in self.settings["GPIOpins"]:
