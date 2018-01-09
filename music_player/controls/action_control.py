@@ -102,9 +102,9 @@ class Action_Control(object):
         elif inpt == "b":
             self.view.list_visual.select(nextSong = False)
         elif inpt == "p":
-            self.view.list_visual.change_list(down=True)
+            print(self.view.list_visual.down())
         elif inpt == "o":
-            self.view.list_visual.change_list(down=False)
+            print(self.view.list_visual.up())
         elif inpt == "r":
             self.view.start()
         elif representsInt(inpt):

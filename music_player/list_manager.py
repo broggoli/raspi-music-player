@@ -49,26 +49,32 @@ class Dir_List(List_Manager):
         else:
             self.name = self.directory
 
-    def set_dir(self, directory):
-        self.directory = directory
+    def set_dir(self, directory=None, path=None):
+        if directory != None:
+            self.directory = directory
+            self.pathToCurrentDir = self.get_path(pathSoFar=[])
+        else:
+            self.directory = path[-1]
+            self.pathToCurrentDir = path
         #A bit inefficient, which hurts my programmer heart, but don't have time to find a more elegant solution
         #just searches the whole Tree again
-        self.pathToCurrentDir = self.get_path(pathSoFar=[])
-
+        print("path",self.pathToCurrentDir)
         self.dirTree = self.getTreeFromPath(self.pathToCurrentDir)
         self.set_name()
-        self.get_songs()
 
     def moveOneUp(self):
         if len(self.pathToCurrentDir) > 2:
-            self.set_dir(self.pathToCurrentDir[-2])
+            p = self.pathToCurrentDir[:-1]
+            self.set_dir(path=p)
         else:
             self.set_dir("")
 
     def moveOneDown(self, directory):
         if directory in self.dirTree:
-
-            self.set_dir(directory)
+            p = list(self.pathToCurrentDir)
+            p.append(directory)
+            print("path",p)
+            self.set_dir(path=p)
 
     def get_path(self, tree=None, pathSoFar=[], found=False):
         """ recursively searches through the given directory and returns a tree
@@ -79,6 +85,10 @@ class Dir_List(List_Manager):
             return [self.rootDir]
 
         if not found:
+            print("pathOfThisDir", self.get_top_branches(tree))
+            if self.directory in self.get_top_branches(tree):
+                pathSoFar.append(tree[0])
+                return pathSoFar
             for branch in tree:
 
                 if not representsInt(branch):
@@ -97,9 +107,11 @@ class Dir_List(List_Manager):
         print("nothing found")
         return [self.rootDir]
 
-    def get_top_branches(self):
+    def get_top_branches(self, tree=None):
         topBranches = []
-        for branch in self.dirTree:
+        if tree == None:
+            tree = self.dirTree
+        for branch in tree:
             topBranches.append(branch)
         return topBranches
 
@@ -113,6 +125,7 @@ class Dir_List(List_Manager):
     def get_songs(self, shuffle = False):
         self.songPaths = self.get_mp3s(self.dirTree)
         self.songNames = self.extract_song_names(self.songPaths)
+        return self.songNames
 
     def extract_song_names(self, songPaths):
         """ returns the song name without the '.mp3' and the song number, if there is one"""
@@ -149,11 +162,15 @@ class List_Visual(object):
         self.itemsPerPage = 6
         self.dir_list = Dir_List(self.settingsDict["musicDir"], self.settingsDict["lastDir"])
         self.setupNewList(self.settingsDict["lastSongIndex"])
+        self.currentView = self.settingsDict["currentView"]
 
     def currentList(self):
         l = self.dir_list.get_top_branches()
         if "songs" in l and len(l) <= 2:
-            return self.dir_list["songs"]
+            self.currentView = "playlist"
+            return self.dir_list.get_songs()
+
+        self.currentView = "directory"
         return self.dir_list.get_top_branches()[1:]
 
     def amount_pages(self):
@@ -174,8 +191,9 @@ class List_Visual(object):
 
     def visible_list(self, proposedSelected):
 
+        cl = self.currentList()
         # Limit the maximal selectable index to the last index of the list
-        proposedSelected = min(len(self.currentList())-1, proposedSelected)
+        proposedSelected = min(len(cl)-1, proposedSelected)
         proposedSelected = max(0, proposedSelected)
 
         self.currentPage = int(math.floor(proposedSelected/self.itemsPerPage) + 1)
@@ -185,22 +203,36 @@ class List_Visual(object):
         lastItemIndex =  self.itemsPerPage * self.currentPage - 1
         self.highlited = self.currentlySelected % self.itemsPerPage
 
-        self.visibleList = [item for index, item in enumerate(self.currentList())
-                if index >= firstItemIndex and
-                index <= lastItemIndex]
+        if len(cl) > 0:
+            self.visibleList = [item for index, item in enumerate(cl)
+                    if index >= firstItemIndex and
+                    index <= lastItemIndex]
+        else:
+            self.visibleList = ["Da hets nix drin..."]
 
-    def change_list(self, directory=None, down=None):
-        if directory:
-            self.dir_list.set_dir(directory)
-        elif not down == None:
-            if down == True:
+    def change_list(self, directory=None):
+        self.dir_list.set_dir(directory)
+
+    def down(self):
+        cl = self.currentList()
+        if len(cl) > 0:
+            if self.currentView == "directory":
                 #make the currently selected item the new directory
-                directory = self.currentList()[self.currentlySelected]
+                directory = cl[self.currentlySelected]
                 self.dir_list.moveOneDown(directory)
+                self.setupNewList(0)
+                return "moved Down"
             else:
-                self.dir_list.moveOneUp()
+                return "Play"
+    def up(self):
+        if self.currentView == "playlist":
+            self.currentView == "directory"
 
-        self.setupNewList(0)
+        """ For later, to have the same folder selected that has just been exited"""
+        dirIndex = 0
+        self.dir_list.moveOneUp()
+        self.setupNewList(dirIndex)
+        return "Pause"
 
     def setupNewList(self, selected):
         self.listName = self.dir_list.name

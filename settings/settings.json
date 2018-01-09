@@ -1,7 +1,7 @@
 {
     "musicDir": "../mp3",
     "lastDir": "",
-    "songView": "False",
+    "currentView": "directory",
     "lastSongIndex": 0,
     "volume": 60,
     "songInterruptTime": 0,
