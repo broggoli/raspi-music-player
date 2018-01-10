@@ -48,7 +48,7 @@ class Volume_Control(object):
         time.sleep(self.cooldownTime)
         #print((datetime.now() - self.lastCalled).microseconds)
         if((datetime.now() - self.lastCalled).microseconds >= self.cooldownTime * 1000000):
-            self.callback(self.volume)
+            self.callback(volume = self.volume)
 
     def set_volume(self, vol, callback=None):
         if callback:

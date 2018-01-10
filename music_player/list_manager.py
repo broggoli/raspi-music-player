@@ -50,14 +50,16 @@ class Dir_List(List_Manager):
         if directory != None:
             self.directory = directory
             self.pathToCurrentDir = self.get_path(pathSoFar=[])
-            self.dirTree = self.getTreeFromPath(self.pathToCurrentDir)
         else:
             self.directory = path[-1]
             self.pathToCurrentDir = path
-            self.dirTree = self.dirTree[self.directory]
+        #A bit inefficient, which hurts my programmer heart, but don't have time to find a more elegant solution
+        #just searches the whole Tree
+        self.dirTree = self.getTreeFromPath(self.pathToCurrentDir)
         self.set_name()
 
     def moveOneUp(self):
+        print(self.pathToCurrentDir)
         if len(self.pathToCurrentDir) > 2:
             p = self.pathToCurrentDir[:-1]
             self.set_dir(path=p)
@@ -66,10 +68,12 @@ class Dir_List(List_Manager):
 
     def moveOneDown(self, directory):
         if directory in self.dirTree:
-            p = list(self.pathToCurrentDir)
-            p.append(directory)
-            print("path",p)
-            self.set_dir(path=p)
+            path = list(self.pathToCurrentDir)
+            path.append(directory)
+            self.directory = path[-1]
+            self.pathToCurrentDir = path
+            self.dirTree = self.dirTree[self.directory]
+            self.set_name()
 
     def get_path(self, tree=None, pathSoFar=[], found=False):
         """ recursively searches through the given directory and returns a tree
@@ -80,7 +84,6 @@ class Dir_List(List_Manager):
             return [self.rootDir]
 
         if not found:
-            print("pathOfThisDir", self.get_top_branches(tree))
             if self.directory in self.get_top_branches(tree):
                 pathSoFar.append(tree[0])
                 return pathSoFar
@@ -184,6 +187,13 @@ class List_Visual(object):
                 #select previous song list
                 self.visible_list(self.currentlySelected - 1)
 
+    def trimForDisplay(self, string):
+        maxLen=13
+        if len(string) <= maxLen:
+            return string
+        else:
+            return string[:maxLen] + "..."
+
     def visible_list(self, proposedSelected):
 
         cl = self.currentList()
@@ -205,6 +215,7 @@ class List_Visual(object):
         else:
             self.visibleList = ["Da hets nix drin..."]
 
+        self.visibleList = map(self.trimForDisplay, self.visibleList)
     def change_list(self, directory=None):
         self.dir_list.set_dir(directory)
 
@@ -235,7 +246,6 @@ class List_Visual(object):
         self.currentlySelected = selected
         self.amount_pages()
         self.visible_list(self.currentlySelected)
-        print("New List Generated!")
 
     def get_scroll_info(self):
         return (self.currentPage, self.totalPages)

@@ -26,7 +26,7 @@ class Action_Control(object):
         #Setting up the hardware components and tieing them to the respective function
         self.volume_control_dial = Rotary_Encoder_Control(self.pins["CLOCK_PIN"], self.pins["DATA_PIN"],
                                                             self.volume_control.change_volume,
-                                                            self.view.update_volume_view)
+                                                            self.view.update_view)
         #setting up the song control buttons
         self.next_song_button = Button_Control(self.pins["NEXT_SONG_BUTTON_PIN"],
                                             self.push_log,
@@ -84,14 +84,19 @@ class Action_Control(object):
                 self.song_control.rewind()
             elif pinNr == self.play_pause_button.bttn:
                 #self.song_control.play_pause()
-                print("one folder up!")
+                print(self.view.list_visual.up())
         else:
             if pinNr == self.next_song_button.bttn:
-                self.song_control.next_song()
+                #self.song_control.next_song()
+                self.view.list_visual.select(nextSong = True)
             if pinNr == self.previous_song_button.bttn:
-                self.song_control.previous_song()
+                #self.song_control.previous_song()
+                self.view.list_visual.select(nextSong = False)
             if pinNr == self.play_pause_button.bttn:
                 self.song_control.play_pause()
+                print(self.view.list_visual.down())
+
+        self.view.update_view()
 
     def handleKeyInputs(self):
         inpt = raw_input()

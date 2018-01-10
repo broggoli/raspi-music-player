@@ -8,7 +8,7 @@ class Display_Control(object):
     def __init__(self, displayRotation = 0):
 
         self.background = Image.open('../raspi-music-player/bitmaps/mp3-player-background.bmp')
-        #self.gray-bg = Image.open('../raspi-music-player/bitmaps/gray-background.bmp')
+        #self.grayBg = Image.open('../raspi-music-player/bitmaps/gray-background.bmp')
 
         self.font = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 24)
         self.displayRotation = displayRotation

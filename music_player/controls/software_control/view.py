@@ -23,18 +23,28 @@ class Main_Winow(Window):
         super(Main_Winow, self).__init__(size, position, fontSize=self.fSize)
         self.window_image = Image.new('1', (self.sizeX, self.sizeY), 255)
 
-    def get_image(self, songList, highlightedItem):
+    def get_image(self, songList, highlightedItem, currentView):
+
+        def oposite_color(color):
+            if color == 0:
+                return 255
+            else:
+                return 0
+        print(currentView)
+
+        bgColor = 0 if currentView == "playlist" else 255
+
         draw = ImageDraw.Draw(self.window_image)
-        draw.rectangle((0, 0, self.sizeX, self.sizeY), fill = 255)
+        draw.rectangle((0, 0, self.sizeX, self.sizeY), fill = bgColor)
 
         for index, song in enumerate(songList):
             if index < 6:
                 yPos = index * self.fSize + 2
                 if(highlightedItem == index):
-                    draw.rectangle((0, yPos-1, self.sizeX, yPos+self.fSize+1), fill = 0)
-                    draw.text((5, yPos), song, font = self.f, fill = 255)
+                    draw.rectangle((0, yPos-1, self.sizeX, yPos+self.fSize+1), fill = oposite_color(bgColor))
+                    draw.text((5, yPos), song, font = self.f, fill = bgColor)
                 else:
-                    draw.text((5, yPos), song, font = self.f, fill = 0)
+                    draw.text((5, yPos), song, font = self.f, fill = oposite_color(bgColor))
             else:
                 break
 
@@ -63,10 +73,11 @@ class List_Title(Window):
         self.s = (self.sizeX, self.sizeY)
         self.list_title_image = Image.new('1', (self.sizeX, self.sizeY), 255)
 
-    def get_image(self, breadcrum):
+    def get_image(self, listTitle):
         draw = ImageDraw.Draw(self.list_title_image)
         draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
-        draw.text((5, 1), breadcrum, font = self.f, fill = 0)
+
+        draw.text((5, 1), listTitle, font = self.f, fill = 0)
         draw.line((0, self.sizeY-2, self.sizeX, self.sizeY-2), fill = 0, width=2)
 
         return self.list_title_image
@@ -120,6 +131,7 @@ class Volume_View(Window):
 
     def get_image(self, volume):
         draw = ImageDraw.Draw(self.volume_image)
+        draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
         draw.text((5, 0), "Volume:"+str(volume), font = self.f, fill = 0)
         return self.volume_image
 
@@ -153,7 +165,7 @@ class View(Display_Control):
         self.draw_partial(self.mainImage, 0, 32)
 
     def start(self):
-        #self.draw_background()
+        self.draw_background()
         scrollInfo = self.list_visual.get_scroll_info()
         self.update_view(volume = self.settings["volume"])
 
@@ -175,12 +187,13 @@ class View(Display_Control):
 
         scrollInfo = self.list_visual.get_scroll_info()
 
-        vl, ch = self.list_visual.visibleList, self.list_visual.highlited
+        vl, ch  =   self.list_visual.visibleList, self.list_visual.highlited
+        cv, ln  =   self.list_visual.currentView, self.list_visual.listName
         print(vl, ch, scrollInfo)
         imageList = [
-                        (self.main_window.get_image(vl, ch), self.main_window.position),
+                        (self.main_window.get_image(vl, ch, cv), self.main_window.position),
                         (self.scroll_bar.get_image(scrollInfo), self.scroll_bar.position),
                         (self.page_counter.get_image(scrollInfo), self.page_counter.position),
-                        (self.list_title.get_image(self.list_visual.listName), self.list_title.position)
+                        (self.list_title.get_image(ln), self.list_title.position)
                     ]
         return imageList

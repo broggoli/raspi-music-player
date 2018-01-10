@@ -4,7 +4,7 @@ from time import sleep
 GPIO.setmode(GPIO.BCM)
 pin = 16
 #The button needs a pull up resistor in order to not float
-GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 try:
     while(True):
