@@ -2,6 +2,7 @@ import alsaaudio
 from datetime import datetime
 import time
 from threading import Thread
+import os
 
 class Volume_Control(object):
     """
@@ -12,21 +13,20 @@ class Volume_Control(object):
             min- & max_volume: pretty self explanatory
     """
 
-    def __init__(self, initial_volume, min_volume=0, max_volume=100):
-        self.volume = initial_volume
+    def __init__(self, state, min_volume=0, max_volume=100):
+        self.state = state
+
+        self.volume = self.state.currentVolume
         self.minMaxVol = (min_volume, max_volume)
         #only update the display after there was no action for given amount of seconds
         self.cooldownTime = 0.5
         self.recentlyCalled = False
         self.lastCalled = datetime.now()
-        """
-        print(alsaaudio.mixers)
-        self.volume_mixer = alsaaudio.Mixer(alsaaudio.mixers[0])
-        """
-    def change_volume(self, clockwise, callback, adjustment_step = 5):
+
+
+    def change_volume(self, clockwise, adjustment_step = 5):
         #If the direction is clockwise -> True -> increase Volume, else decrease Volume
 
-        self.callback = callback
         if clockwise:
             vol = self.volume + adjustment_step
         else:
@@ -50,13 +50,8 @@ class Volume_Control(object):
         if((datetime.now() - self.lastCalled).microseconds >= self.cooldownTime * 1000000):
             self.callback(volume = self.volume)
 
-    def set_volume(self, vol, callback=None):
-        if callback:
-            self.callback = callback
+    def set_volume(self, vol):
         print("setting volume!")
         self.volume = vol
-
-        self.lastCalled = datetime.now()
-        t = Thread(target=self.exec_if_time_passed)
-        t.start()
-        #self.volume_mixer.setvolume(self.volume)
+        self.state.currentVolume = self.volume
+        os.system("mpc volume %i" %self.volume)

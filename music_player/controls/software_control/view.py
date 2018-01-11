@@ -2,6 +2,8 @@ from .window.display_control import Display_Control
 import ImageDraw
 import Image
 import ImageFont
+from datetime import datetime
+import time
 
 class Window(Display_Control):
 
@@ -137,11 +139,13 @@ class Volume_View(Window):
 
 class View(Display_Control):
 
-    def __init__(self, settings, list_visual):
+    def __init__(self, state, list_visual):
         super(View, self).__init__()
-        self.settings = settings
+        self.lastState = state
         self.mainImage = Image.new('1', (200, 168), 255)
         self.status_bar = Battery_Indicator(size = (34, 10), position = (154, 12))
+
+        self.cooldownTime = 0.3
 
         #Initalizing all the components of the display by giving them a size and position in the main Image
         self.list_title = List_Title(size = (200, 20),  position = (0, 0))
@@ -165,35 +169,39 @@ class View(Display_Control):
         self.draw_partial(self.mainImage, 0, 32)
 
     def start(self):
-        self.draw_background()
-        scrollInfo = self.list_visual.get_scroll_info()
-        self.update_view(volume = self.settings["volume"])
+        pass
+        #self.draw_background()
 
-    def update_view(self, volume=None, newList=None):
-        imageList = []
-        if volume:
-            imageList.extend(self.update_volume_view(volume))
+    def update_view(self):
 
-        imageList.extend(self.update_list(newList))
+        scrollInfo = (self.lastState.currentPageNr, self.lastState.currentTotalPages)
 
-        self.paint(imageList)
+        vl, ch  =   self.lastState.currentlyVisibleList, self.lastState.currentlyHighlighted
+        cv, ln  =   self.lastState.currentView, self.lastState.currentListName
+        volume  =   self.lastState.currentVolume
 
-    def update_volume_view(self, volume):
-        return [    (self.volume_view.get_image(volume), self.volume_view.position)     ]
-
-    def update_list(self, newList=None):
-        if newList:
-             self.list_visual.change_list(newList)
-
-        scrollInfo = self.list_visual.get_scroll_info()
-
-        vl, ch  =   self.list_visual.visibleList, self.list_visual.highlited
-        cv, ln  =   self.list_visual.currentView, self.list_visual.listName
-        print(vl, ch, scrollInfo)
+        #print(vl, ch, scrollInfo, volume)
         imageList = [
                         (self.main_window.get_image(vl, ch, cv), self.main_window.position),
                         (self.scroll_bar.get_image(scrollInfo), self.scroll_bar.position),
                         (self.page_counter.get_image(scrollInfo), self.page_counter.position),
-                        (self.list_title.get_image(ln), self.list_title.position)
+                        (self.list_title.get_image(ln), self.list_title.position),
+                        (self.volume_view.get_image(volume), self.volume_view.position)
                     ]
-        return imageList
+        self.paint(imageList)
+
+    def update(self, state):
+        """ This function is necessary because the Display has such a low refresh rate."""
+        time.sleep(self.cooldownTime)
+        now = datetime.now()
+        microseconds = (now - state.lastUpdated).microseconds
+        seconds = (now - state.lastUpdated).seconds
+        timePassedMs = seconds * 1000000 + microseconds
+
+        if(timePassedMs >= self.cooldownTime * 1000000):
+            if not state.displayed:
+                #print("something changed")
+                #print(state.__dict__)
+                state.displayed = True
+                self.lastState = state
+                self.update_view()

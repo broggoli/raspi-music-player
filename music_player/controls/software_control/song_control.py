@@ -1,25 +1,28 @@
-
+import os
 class Song_Control(object):
 
-    def __init__(self):
+    def __init__(self, state):
         #initially the song is paused
-        self.isPaused = True
+        self.state = state
 
     def play_pause(self):
-
-        if self.isPaused:
+        if self.state.play:
             print("Play!")
-            self.isPaused = False
+            self.state.play = True
         else:
             print("Pause!")
-            self.isPaused = True
+            self.state.play = False
+
+        os.system("mpc toggle")
 
     def next_song(self):
         """ for now just mockup"""
+        os.system("mpc next")
         print("playing next song!")
 
     def previous_song(self):
         """ for now just mockup"""
+        os.system("mpc prev")
         print("playing previous song!")
 
     def get_play_state(self):

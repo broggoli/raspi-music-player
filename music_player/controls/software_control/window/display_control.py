@@ -31,7 +31,6 @@ class Display_Control(object):
     def draw_background(self):
         self.draw_full(self.background)
 
-
     def draw_full(self, image):
         self.epd.init(self.epd.lut_full_update)
         #Display full frame

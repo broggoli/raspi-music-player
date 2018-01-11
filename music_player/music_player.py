@@ -8,6 +8,7 @@ from controls.action_control import Action_Control
 from settings import Settings
 import list_manager as lm
 from controls.software_control.view import View
+from state import State
 
 class Music_player(object):
     """
@@ -16,17 +17,17 @@ class Music_player(object):
     """
 
     def __init__(self):
-        self.shutDown = False
-
         #loading the settings from the json file
         self.settings = Settings()
         self.settings.print_pins()
         self.settingsDict, self.pins = self.settings.load()
 
-        self.list_visual = lm.List_Visual(self.settingsDict)
+        self.state = State(self.settingsDict)
 
-        self.view = View(self.settingsDict, self.list_visual)
-        self.action_control = Action_Control(self.settings, self.view)
+        self.list_visual = lm.List_Visual(self.state)
+
+        self.view = View(self.state, self.list_visual)
+        self.action_control = Action_Control(self.pins, self.state, self.list_visual)
 
     def start(self):
         #starting the event listeners
@@ -34,9 +35,6 @@ class Music_player(object):
         self.action_control.start()
         self.view.start()
         self.start_loop()
-
-    def shut_down(self):
-        self.shutDown = True
 
     def stop(self):
         self.action_control.stop()
@@ -49,11 +47,12 @@ class Music_player(object):
             while continu:
                 #handle Events
                 """Activate when no buttons are available"""
-                self.action_control.handleKeyInputs();
-                if self.shutDown:
+                #self.action_control.handleKeyInputs();
+                self.view.update(self.state)
+                if self.action_control.shutDown:
                     continu = False
                     print("Terminated the program!")
-                sleep(0.5)
+                sleep(0.05)
         finally:
             self.stop()
             GPIO.cleanup()
