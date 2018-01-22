@@ -31,7 +31,11 @@
         "pinNr": 6
       },
       {
-        "name": "SHUT_DOWN_BUTTON_PIN",
-        "pinNr": 12
+        "name": "SHUTDOWN_BUTTON_PIN",
+        "pinNr": 14
+      },
+      {
+        "name": "LOW_BATTERY_PIN",
+        "pinNr": 15
       }]
 }
