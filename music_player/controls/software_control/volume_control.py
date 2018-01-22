@@ -1,7 +1,5 @@
-import alsaaudio
 from datetime import datetime
 import time
-from threading import Thread
 import os
 
 class Volume_Control(object):
