@@ -43,9 +43,11 @@ class Main_Winow(Window):
             if index < 6:
                 yPos = index * self.fSize + 2
                 if(highlightedItem == index):
+                    print("* "+song)
                     draw.rectangle((0, yPos-1, self.sizeX, yPos+self.fSize+1), fill = oposite_color(bgColor))
                     draw.text((5, yPos), song, font = self.f, fill = bgColor)
                 else:
+                    print("- "+song)
                     draw.text((5, yPos), song, font = self.f, fill = oposite_color(bgColor))
             else:
                 break
@@ -79,6 +81,9 @@ class List_Title(Window):
         draw = ImageDraw.Draw(self.list_title_image)
         draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
 
+        print("                     ")
+        print(listTitle)
+        print("---------------------")
         draw.text((5, 1), listTitle, font = self.f, fill = 0)
         draw.line((0, self.sizeY-2, self.sizeX, self.sizeY-2), fill = 0, width=2)
 
@@ -94,6 +99,7 @@ class Page_Counter(Window):
         draw = ImageDraw.Draw(self.page_counter_image)
         draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
         pageCounterText = "%i/%i" % scrollInfo
+        print("                  "+pageCounterText)
         draw.text((0, 0), pageCounterText, font = self.f, fill = 0)
 
         return self.page_counter_image
@@ -134,6 +140,7 @@ class Volume_View(Window):
     def get_image(self, volume):
         draw = ImageDraw.Draw(self.volume_image)
         draw.rectangle((0, 0, self.sizeX, self.sizeY), fill=255)
+        print("Volume:"+str(volume))
         draw.text((5, 0), "Volume:"+str(volume), font = self.f, fill = 0)
         return self.volume_image
 
@@ -169,8 +176,7 @@ class View(Display_Control):
         self.draw_partial(self.mainImage, 0, 32)
 
     def start(self):
-        pass
-        #self.draw_background()
+        self.draw_background()
 
     def update_view(self):
 
@@ -182,11 +188,11 @@ class View(Display_Control):
 
         #print(vl, ch, scrollInfo, volume)
         imageList = [
+                        (self.list_title.get_image(ln), self.list_title.position),
                         (self.main_window.get_image(vl, ch, cv), self.main_window.position),
                         (self.scroll_bar.get_image(scrollInfo), self.scroll_bar.position),
-                        (self.page_counter.get_image(scrollInfo), self.page_counter.position),
-                        (self.list_title.get_image(ln), self.list_title.position),
-                        (self.volume_view.get_image(volume), self.volume_view.position)
+                        (self.volume_view.get_image(volume), self.volume_view.position),
+                        (self.page_counter.get_image(scrollInfo), self.page_counter.position)
                     ]
         self.paint(imageList)
 

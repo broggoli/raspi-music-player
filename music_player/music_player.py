@@ -22,7 +22,7 @@ class Music_player(object):
         self.settings.print_pins()
         self.settingsDict, self.pins = self.settings.load()
 
-        self.state = State(self.settingsDict)
+        self.state = State(self.settingsDict, self.pins)
 
         self.list_visual = lm.List_Visual(self.state)
 

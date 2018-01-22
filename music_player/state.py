@@ -2,10 +2,7 @@ from datetime import datetime
 
 class State(object):
 
-    def __init__(self, settings):
-        self.create_main_state_vars(settings)
-
-    def create_main_state_vars(self, settings):
+    def __init__(self, settings, pins):
         #Insert from settings
         self.itemsPerPage = settings["itemsPerPage"]
         self.musicDir = settings["musicDir"]
@@ -22,6 +19,7 @@ class State(object):
         self.lastUpdated = datetime.now()
         self.currentDir = self.currentDirPath[-1]
         self.currentListName = self.list_name()
+        self.pinStates = self.initializePinStates(pins)
         self.displayed = False
 
         #define
@@ -30,8 +28,15 @@ class State(object):
     def update(self):
         self.displayed = False
         self.lastUpdated = datetime.now()
-        print(self.__dict__)
-        print("updated")
+        #print("updated")
+
+    def initializePinStates(self, pins):
+        ps = {}
+        for pin in pins:
+            pinNr = pins[pin]
+            ps[pinNr] = {"actionStart": 0}
+
+        return ps
 
     def list_name(self):
         return "Alli dini Lieder" if self.currentDir == "" else self.currentDir

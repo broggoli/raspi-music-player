@@ -164,9 +164,8 @@ class List_Visual(object):
         l = self.dir_list.get_top_branches()
         if "songs" in l and len(l) <= 2:
             songNames, songPaths = self.dir_list.get_songs(getNames=True, getPaths=True)
-            print(songPaths)
+            
             for s in songPaths:
-                print("adding \""+s+"\"")
                 os.system("mpc add \""+s+"\"")
 
             self.state.currentView = "playlist"

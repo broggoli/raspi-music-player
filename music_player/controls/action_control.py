@@ -16,7 +16,6 @@ class Action_Control(object):
         self.list_visual = list_visual
         self.shutDown = False
 
-        self.currentlyPressed = {}
         self.longPushTime = 1
 
         #setting up the volume control dial -> is also the play&pause button
@@ -58,14 +57,14 @@ class Action_Control(object):
         self.volume_control.change_volume(clockwise)
         self.state.update()
 
-
     def push_log(self, pinNr, clicked):
-        if pinNr in self.currentlyPressed:
 
-            if self.currentlyPressed[pinNr]["start"] == 0 and clicked:
-                self.currentlyPressed[pinNr] = {"clicked": clicked, "start": datetime.now()}
+        if pinNr in self.state.pinStates:
 
-            timeElapsed = (datetime.now() - self.currentlyPressed[pinNr]["start"]).seconds
+            if self.state.pinStates[pinNr]["actionStart"] == 0 and clicked:
+                self.state.pinStates[pinNr]["actionStart"] = datetime.now()
+
+            timeElapsed = (datetime.now() - self.state.pinStates[pinNr]["actionStart"]).seconds
             if clicked:
                 if timeElapsed >= self.longPushTime:
                     self.determin_push_action(pinNr, True)
@@ -73,9 +72,9 @@ class Action_Control(object):
             else:
                 if timeElapsed < self.longPushTime:
                     self.determin_push_action(pinNr)
-                self.currentlyPressed[pinNr] = {"clicked": False, "start": 0}
+                self.state.pinStates[pinNr]["actionStart"] = 0
         else:
-            self.currentlyPressed[pinNr] = {"clicked": clicked, "start": datetime.now()}
+            print("pin not initialized!")
 
         #print(pinNr, self.currentlyPressed[pinNr]["start"], clicked)
 
@@ -103,7 +102,6 @@ class Action_Control(object):
                 print("shut down!")
                 self.shut_down()
 
-        print("pressed: ",pinNr)
         self.state.update()
 
     def handleKeyInputs(self):
