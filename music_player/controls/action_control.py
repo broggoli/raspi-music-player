@@ -1,6 +1,7 @@
 #importing the hardware controls
 from hardware_control.button_control import Button_Control
 from hardware_control.rotary_encoder_control import Rotary_Encoder_Control
+from hardware_control.battery_control import Battery_Control
 
 from software_control.song_control import Song_Control
 from software_control.volume_control import Volume_Control
@@ -21,6 +22,7 @@ class Action_Control(object):
         #setting up the volume control dial -> is also the play&pause button
         self.volume_control = Volume_Control(self.state)
         self.song_control = Song_Control(self.state)
+        self.battery_control = Battery_Control(self.pins, shutdown_callback = self.terminate_loop)
 
         #Setting up the hardware components and tieing them to the respective function
         self.volume_control_dial = Rotary_Encoder_Control(self.pins["CLOCK_PIN"], self.pins["DATA_PIN"],
@@ -79,7 +81,11 @@ class Action_Control(object):
         #print(pinNr, self.currentlyPressed[pinNr]["start"], clicked)
 
     def determin_push_action(self, pinNr, longPush=False):
+        """
+            This is the callback function for all the buttons. It is necessary 
+            to have this to detect when two buttons are pressed simultanously
 
+        """
         if longPush:
             if pinNr == self.next_song_button.bttn:
                 self.song_control.fast_forward()
@@ -100,14 +106,14 @@ class Action_Control(object):
                 print(self.list_visual.down())
             if pinNr == self.shut_down_button.bttn:
                 print("shut down!")
-                self.shut_down()
+                self.terminate_loop()
 
         self.state.update()
 
     def handleKeyInputs(self):
         inpt = raw_input()
         if inpt == "q":
-            self.shut_down()
+            self.terminate_loop()
         elif inpt == "n":
             self.view.list_visual.select(nextEntry = True)
         elif inpt == "b":
@@ -123,8 +129,9 @@ class Action_Control(object):
             self.view.update_volume_view)
         self.view.update_view()
 
-    def shut_down(self):
+    def terminate_loop(self):
         self.shutDown = True
+
 #Helper functions
 def representsInt(s):
     try:

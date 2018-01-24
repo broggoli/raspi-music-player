@@ -2,13 +2,15 @@ from RPi import GPIO
 from time import sleep
 
 GPIO.setmode(GPIO.BCM)
-pin = 5
-#The button needs a pull up resistor in order to not float
-GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+lowBatteryPin = 21
+batPin = 20
+
+GPIO.setup(lowBatteryPin, GPIO.IN)
+GPIO.setup(batPin, GPIO.IN)
 
 try:
     while(True):
-        print(GPIO.input(pin))
+        print(GPIO.input(batPin), GPIO.input(lowBatteryPin))
         sleep(0.05)
 
 except KeyboardInterrupt:

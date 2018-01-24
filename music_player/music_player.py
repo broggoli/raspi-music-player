@@ -51,8 +51,25 @@ class Music_player(object):
                 self.view.update(self.state)
                 if self.action_control.shutDown:
                     continu = False
+                    self.shutdown()
                     print("Terminated the program!")
-                sleep(0.05)
+                sleep(0.2)
         finally:
             self.stop()
             GPIO.cleanup()
+
+    def shutdown(channel):
+        cmd = "sudo wall 'System shutting down in %d seconds'" % self.shutdown_wait
+        os.system(cmd)
+
+        time.sleep(self.shutdown_wait)
+
+        msg = time.strftime("User Request - Shutting down at %a, %d %b %Y %H:%M:%S +0000\n", time.gmtime())
+
+        # open log file in append mode
+        self.logfile_pointer = open(self.logfile, 'a+')
+        self.logfile_pointer.write(msg)
+        self.logfile_pointer.close()
+
+        GPIO.cleanup()
+        os.system("sudo shutdown now")

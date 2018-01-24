@@ -4,6 +4,8 @@ class Song_Control(object):
     def __init__(self, state):
         #initially the song is paused
         self.state = state
+        #How many seconds does it rewind or fast forward
+        self.jumpTime = 5
 
     def play_pause(self):
         if self.state.play:
@@ -29,8 +31,8 @@ class Song_Control(object):
         return self.isPaused
 
     def fast_forward(self):
-        """ for now just mockup"""
+        os.system("mpc +"+self.jumpTime)
         print("Fast forward!")
     def rewind(self):
-        """ for now just mockup"""
+        os.system("mpc -"+self.jumpTime)
         print("Rewind!")

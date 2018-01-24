@@ -31,11 +31,15 @@
         "pinNr": 6
       },
       {
-        "name": "SHUTDOWN_BUTTON_PIN",
+        "name": "POWERBOOST_ENABLE",
         "pinNr": 14
       },
       {
         "name": "LOW_BATTERY_PIN",
         "pinNr": 15
+      },
+      {
+        "name": "SHUTDOWN_BUTTON_PIN",
+        "pinNr": 5
       }]
 }
