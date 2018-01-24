@@ -54,6 +54,7 @@ class Main_Winow(Window):
 
         draw.line((0, self.sizeY-1, self.sizeX, self.sizeY-1), fill = 0, width=2)
         return self.window_image
+""" Not necessary for now beacause i have no way of reading the battery level
 
 class Battery_Indicator(Window):
 
@@ -69,7 +70,7 @@ class Battery_Indicator(Window):
         draw.rectangle((0, 0, fullW, self.sizeY), fill = 0)
 
         return self.batteryImage
-
+"""
 class List_Title(Window):
 
     def __init__(self, size, position):
@@ -150,7 +151,7 @@ class View(Display_Control):
         super(View, self).__init__()
         self.lastState = state
         self.mainImage = Image.new('1', (200, 168), 255)
-        self.status_bar = Battery_Indicator(size = (34, 10), position = (154, 12))
+        #self.status_bar = Battery_Indicator(size = (34, 10), position = (154, 12))
 
         self.cooldownTime = 0.3
 
