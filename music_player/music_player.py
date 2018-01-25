@@ -20,14 +20,14 @@ class Music_player(object):
         #loading the settings from the json file
         self.settings = Settings()
         self.settings.print_pins()
-        self.settingsDict, self.pins = self.settings.load()
+        self.settingsDict = self.settings.load()
 
-        self.state = State(self.settingsDict, self.pins)
+        self.state = State(self.settingsDict)
 
         self.list_visual = lm.List_Visual(self.state)
 
         self.view = View(self.state, self.list_visual)
-        self.action_control = Action_Control(self.pins, self.state, self.list_visual)
+        self.action_control = Action_Control(self.state, self.list_visual)
 
     def start(self):
         #starting the event listeners

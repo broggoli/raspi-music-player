@@ -10,36 +10,14 @@
     "lastVisibleList": ["1","2","3"],
     "itemsPerPage": 6,
     "GPIOpins":
-    [{
-        "name": "NEXT_SONG_BUTTON_PIN",
-        "pinNr": 26
-      },
-      {
-        "name": "PREVIOUS_SONG_BUTTON_PIN",
-        "pinNr": 20
-      },
-      {
-        "name": "PLAY_PAUSE_BUTTON_PIN",
-        "pinNr": 16
-      },
-      {
-        "name": "CLOCK_PIN",
-        "pinNr": 27
-      },
-      {
-        "name": "DATA_PIN",
-        "pinNr": 6
-      },
-      {
-        "name": "POWERBOOST_ENABLE",
-        "pinNr": 14
-      },
-      {
-        "name": "LOW_BATTERY_PIN",
-        "pinNr": 15
-      },
-      {
-        "name": "SHUTDOWN_BUTTON_PIN",
-        "pinNr": 5
-      }]
+    {
+        "NEXT_SONG_BUTTON_PIN": 26,
+        "PREVIOUS_SONG_BUTTON_PIN" : 20,
+        "PLAY_PAUSE_BUTTON_PIN": 16,
+        "CLOCK_PIN": 27,
+        "DATA_PIN": 6,
+        "POWERBOOST_ENABLE": 14,
+        "LOW_BATTERY_PIN": 15,
+        "SHUTDOWN_BUTTON_PIN": 5,
+    }
 }

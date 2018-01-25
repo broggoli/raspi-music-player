@@ -2,9 +2,9 @@ from RPi import GPIO
 from time import sleep
 
 GPIO.setmode(GPIO.BCM)
-pin = 5
+pin = 21
 #The button needs a pull up resistor in order to not float
-GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(pin, GPIO.IN)
 
 try:
     while(True):

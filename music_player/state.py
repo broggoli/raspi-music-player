@@ -2,7 +2,7 @@ from datetime import datetime
 
 class State(object):
 
-    def __init__(self, settings, pins):
+    def __init__(self, settings):
         #Insert from settings
         self.itemsPerPage = settings["itemsPerPage"]
         self.musicDir = settings["musicDir"]
@@ -19,7 +19,7 @@ class State(object):
         self.lastUpdated = datetime.now()
         self.currentDir = self.currentDirPath[-1]
         self.currentListName = self.list_name()
-        self.pinStates = self.initializePinStates(pins)
+        self.pinStates = self.initializePinStates(self.settings["GPIOpins"])
         self.displayed = False
 
         #define

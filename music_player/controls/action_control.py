@@ -11,8 +11,7 @@ from time import sleep
 
 class Action_Control(object):
 
-    def __init__(self, pins, state, list_visual):
-        self.pins = pins
+    def __init__(self, state, list_visual):
         self.state = state
         self.list_visual = list_visual
         self.shutDown = False
@@ -22,21 +21,21 @@ class Action_Control(object):
         #setting up the volume control dial -> is also the play&pause button
         self.volume_control = Volume_Control(self.state)
         self.song_control = Song_Control(self.state)
-        self.battery_control = Battery_Control(self.pins, shutdown_callback = self.terminate_loop)
+        self.battery_control = Battery_Control(self.settings["GPIOpins"], shutdown_callback = self.terminate_loop)
 
         #Setting up the hardware components and tieing them to the respective function
-        self.volume_control_dial = Rotary_Encoder_Control(self.pins["CLOCK_PIN"], self.pins["DATA_PIN"],
+        self.volume_control_dial = Rotary_Encoder_Control(self.settings["GPIOpins"]["CLOCK_PIN"], self.settings["GPIOpins"]["DATA_PIN"],
                                                             self.rotary_log)
         #setting up the song control buttons
-        self.next_song_button = Button_Control(self.pins["NEXT_SONG_BUTTON_PIN"],
+        self.next_song_button = Button_Control(self.settings["GPIOpins"]["NEXT_SONG_BUTTON_PIN"],
                                             self.push_log,
                                             longClickCallback = True)
-        self.previous_song_button = Button_Control(self.pins["PREVIOUS_SONG_BUTTON_PIN"],
+        self.previous_song_button = Button_Control(self.settings["GPIOpins"]["PREVIOUS_SONG_BUTTON_PIN"],
                                             self.push_log,
                                             longClickCallback = True)
-        self.shut_down_button = Button_Control(self.pins["SHUT_DOWN_BUTTON_PIN"],
+        self.shut_down_button = Button_Control(self.settings["GPIOpins"]["SHUT_DOWN_BUTTON_PIN"],
                                             self.push_log)
-        self.play_pause_button = Button_Control(self.pins["PLAY_PAUSE_BUTTON_PIN"],
+        self.play_pause_button = Button_Control(self.settings["GPIOpins"]["PLAY_PAUSE_BUTTON_PIN"],
                                             self.push_log,
                                             longClickCallback = True,
                                             pullDown = False)
@@ -82,7 +81,7 @@ class Action_Control(object):
 
     def determin_push_action(self, pinNr, longPush=False):
         """
-            This is the callback function for all the buttons. It is necessary 
+            This is the callback function for all the buttons. It is necessary
             to have this to detect when two buttons are pressed simultanously
 
         """
