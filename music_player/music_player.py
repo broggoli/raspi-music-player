@@ -31,7 +31,7 @@ class Music_player(object):
         self.view = View(self.state, self.list_visual)
         self.action_control = Action_Control(self.settingsDict, self.state, self.list_visual)
 
-        self.logfile = '/home/pi/battery_control.log'  # FULL path to the log file
+        self.logfile = 'logs/battery_control.log'
 
     def start(self):
         #starting the event listeners
