@@ -208,7 +208,6 @@ class View(Display_Control):
         if(timePassedMs >= self.cooldownTime * 1000000):
             if not state.displayed:
                 #print("something changed")
-                #print(state.__dict__)
                 state.displayed = True
                 self.lastState = state
                 self.update_view()

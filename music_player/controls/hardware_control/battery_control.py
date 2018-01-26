@@ -18,12 +18,11 @@ class Battery_Control():
     def __init__(self, pins, shutdown_callback):
         lipopi = {}
 
+        self.shutdown_callback = shutdown_callback
         # Specify which GPIO pins to use
-        self.low_battery_pin = pins['LOW_BATTERY_PIN']
+        #self.low_battery_pin = pins['LOW_BATTERY_PIN']
 
-        self.shutdown_pin = pins['SHUTDOWN_BUTTON_PIN']
-
-        self.logfile = '/home/pi/battery_control.log'  # FULL path to the log file
+        self.shutdown_pin = pins['SHUTDOWN_SWITCH_PIN']
 
         self.shutdown_wait = 1  # seconds - how long to wait before actual shutdown - can be 0
 
@@ -33,9 +32,17 @@ class Battery_Control():
         # setup the pin to check the shutdown switch - use the internal pull down resistor
         GPIO.setup(self.shutdown_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # setup the low battery check pin
-        GPIO.setup(self.low_battery_pin, GPIO.IN)
+        #GPIO.setup(self.low_battery_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
+    def start(self):
         # create a trigger for the shutdown switch and low battery pins
+        GPIO.add_event_detect(self.shutdown_pin, GPIO.FALLING, callback=self._callback, bouncetime=300)
+        #GPIO.add_event_detect(self.low_battery_pin, GPIO.FALLING, callback=self._callback, bouncetime=300)
 
-        GPIO.add_event_detect(self.shutdown_pin, GPIO.RISING, callback=shutdown_callback, bouncetime=300)
-        GPIO.add_event_detect(self.low_battery_pin, GPIO.FALLING, callback=shutdown_callback, bouncetime=300)
+    def stop(self):
+        # create a trigger for the shutdown switch and low battery pins
+        GPIO.remove_event_detect(self.shutdown_pin)
+        #GPIO.remove_event_detect(self.low_battery_pin)
+
+    def _callback(self, pin):
+        self.shutdown_callback()

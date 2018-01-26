@@ -16,8 +16,7 @@
         "PLAY_PAUSE_BUTTON_PIN": 16,
         "CLOCK_PIN": 27,
         "DATA_PIN": 6,
-        "POWERBOOST_ENABLE": 14,
         "LOW_BATTERY_PIN": 15,
-        "SHUTDOWN_BUTTON_PIN": 5,
+        "SHUTDOWN_SWITCH_PIN": 5
     }
 }

@@ -1,15 +1,19 @@
 from RPi import GPIO
 from time import sleep
+import os
 
 GPIO.setmode(GPIO.BCM)
-pin = 21
+pin = 5
 #The button needs a pull up resistor in order to not float
-GPIO.setup(pin, GPIO.IN)
+GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 try:
-    while(True):
+    while True:
+        if GPIO.input(pin) == 0:
+            print("would shut down")
+            #os.system("sudo shutdown -h now")
         print(GPIO.input(pin))
-        sleep(0.05)
+        sleep(0.1)
 
 except KeyboardInterrupt:
     GPIO.cleanup()

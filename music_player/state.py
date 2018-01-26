@@ -19,7 +19,7 @@ class State(object):
         self.lastUpdated = datetime.now()
         self.currentDir = self.currentDirPath[-1]
         self.currentListName = self.list_name()
-        self.pinStates = self.initializePinStates(self.settings["GPIOpins"])
+        self.pinStates = { pin: 0 for pin in settings["GPIOpins"] } #self.initializePinStates(self.settings["GPIOpins"])
         self.displayed = False
 
         #define

@@ -11,10 +11,11 @@ from time import sleep
 
 class Action_Control(object):
 
-    def __init__(self, state, list_visual):
+    def __init__(self, settings, state, list_visual):
+        self.settings = settings
         self.state = state
         self.list_visual = list_visual
-        self.shutDown = False
+        self.running = True
 
         self.longPushTime = 1
 
@@ -33,8 +34,6 @@ class Action_Control(object):
         self.previous_song_button = Button_Control(self.settings["GPIOpins"]["PREVIOUS_SONG_BUTTON_PIN"],
                                             self.push_log,
                                             longClickCallback = True)
-        self.shut_down_button = Button_Control(self.settings["GPIOpins"]["SHUT_DOWN_BUTTON_PIN"],
-                                            self.push_log)
         self.play_pause_button = Button_Control(self.settings["GPIOpins"]["PLAY_PAUSE_BUTTON_PIN"],
                                             self.push_log,
                                             longClickCallback = True,
@@ -45,14 +44,14 @@ class Action_Control(object):
         self.play_pause_button.start()
         self.next_song_button.start()
         self.previous_song_button.start()
-        self.shut_down_button.start()
+        self.battery_control.start()
 
     def stop(self):
         self.volume_control_dial.stop()
         self.play_pause_button.stop()
         self.next_song_button.stop()
         self.previous_song_button.stop()
-        self.shut_down_button.stop()
+        self.battery_control.stop()
 
     def rotary_log(self, clockwise):
         self.volume_control.change_volume(clockwise)
@@ -109,7 +108,7 @@ class Action_Control(object):
 
         self.state.update()
 
-    def handleKeyInputs(self):
+    """def handleKeyInputs(self):
         inpt = raw_input()
         if inpt == "q":
             self.terminate_loop()
@@ -126,10 +125,11 @@ class Action_Control(object):
         elif representsInt(inpt):
             self.volume_control.set_volume(int(inpt)*10,
             self.view.update_volume_view)
-        self.view.update_view()
+        self.view.update_view()"""
 
     def terminate_loop(self):
-        self.shutDown = True
+        print("Terminating loop")
+        self.running = False
 
 #Helper functions
 def representsInt(s):
