@@ -197,6 +197,12 @@ class View(Display_Control):
                     ]
         self.paint(imageList)
 
+    def lowBatteryDisplay(self):
+        self.draw_partial(self.lowBatteryImage, 0, 32)
+
+    def shut_down_display(self):
+        self.draw_partial(self.shutDownImage, 0, 32)
+
     def update(self, state):
         """ This function is necessary because the Display has such a low refresh rate."""
         time.sleep(self.cooldownTime)

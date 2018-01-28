@@ -39,7 +39,6 @@ class Button_Control(object):
         GPIO.add_event_detect(self.bttn, detect, callback=self._callback, bouncetime=self.bouncetime)
 
     def stop(self):
-        #removes the event detector
         GPIO.remove_event_detect(self.bttn)
 
     def _callback(self, pin):
@@ -61,7 +60,6 @@ class Button_Control(object):
             else:
                 self.callback(self.bttn, False)
         self.threadCounter -= 1
-
 
     def long_sort_push_callback(self, longPushTime = 1):
 

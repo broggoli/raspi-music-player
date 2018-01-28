@@ -5,7 +5,7 @@ class Song_Control(object):
         #initially the song is paused
         self.state = state
         #How many seconds does it rewind or fast forward
-        self.jumpTime = 5
+        self.jumpPercentage = 5
 
     def play_pause(self):
         if self.state.play:
@@ -31,8 +31,8 @@ class Song_Control(object):
         return self.isPaused
 
     def fast_forward(self):
-        os.system("mpc +"+self.jumpTime)
+        os.system("mpc seek +%i" %self.jumpPercentage)
         print("Fast forward!")
     def rewind(self):
-        os.system("mpc -"+self.jumpTime)
+        os.system("mpc seek -%i" %self.jumpPercentage)
         print("Rewind!")

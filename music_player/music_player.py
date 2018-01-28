@@ -19,8 +19,10 @@ class Music_player(object):
 
     def __init__(self):
         #loading the settings from the json file
+        self.logfile = '/home/pi/raspi-music-player/battery_control.log'
+        self.settingsPath = '/home/pi/raspi-music-player/settings/settings.json'
 
-        self.settings = Settings()
+        self.settings = Settings(self.settingsPath)
         self.settings.print_pins()
         self.settingsDict = self.settings.load()
 
@@ -30,8 +32,6 @@ class Music_player(object):
 
         self.view = View(self.state, self.list_visual)
         self.action_control = Action_Control(self.settingsDict, self.state, self.list_visual)
-
-        self.logfile = 'logs/battery_control.log'
 
     def start(self):
         #starting the event listeners
@@ -49,11 +49,11 @@ class Music_player(object):
                 self.view.update(self.state)
 
                 continu = self.action_control.running
-                print(continu)
+
                 if not continu:
                     print("Terminating the program and shutting down!")
                     self.action_control.stop()
-                    self.settings.save()
+                    self.settings.save(self.state)
                     self.shutdown()
 
             time.sleep(0.1)
@@ -62,11 +62,16 @@ class Music_player(object):
 
         print("shutting down now!")
 
-        shutdown_wait = 1
-        os.system("sudo wall 'System shutting down in %d seconds'" % shutdown_wait)
-        time.sleep(shutdown_wait)
+        os.system("sudo wall 'System shutting down'")
+
+        if self.state.lowBattery:
+            self.view.lowBatteryDisplay()
+            lowBatteryText = " -> lowBattery"
+        else:
+            lowBatteryText = ""
 
         msg = time.strftime("User Request - Shutting down at %a, %d %b %Y %H:%M:%S +0000\n", time.gmtime())
+        msg += lowBatteryText
 
         # open log file in append mode
         self.logfile_pointer = open(self.logfile, 'a+')

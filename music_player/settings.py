@@ -2,24 +2,29 @@ import json
 
 class Settings(object):
 
-    def __init__(self, settingsPath = "../raspi-music-player/settings/settings.json"):
+    def __init__(self, settingsPath):
         self.settingsPath = settingsPath
         self.settings = json.load(open(self.settingsPath), encoding="utf-8")
 
     def load(self):
         return self.settings
 
-    def save(self, volume=None, currentSong=None, currentDir=None):
-        if volume and currentSong and currentDir:
-            if volume:
-                self.settings["volume"] = volume
-            if currentSong:
-                self.settings["lastSong"] = currentSong
-            if currentDir:
-                self.settings["lastDir"] = currentDir
+    def save(self, state):
 
-            with open(self.settingsPath, 'w') as f:
-                json.dump(self.newSettings, f, ensure_ascii=False)
+        newSettings = {
+                        "musicDir": self.settings["musicDir"],
+                        "lastDirPath": state.currentDirPath,
+                        "lastView": state.currentView,
+                        "lastpageNr": state.currentPageNr,
+                        "totalPages": state.currentTotalPages,
+                        "lastSelected": state.currentlySelected,
+                        "volume": state.currentVolume,
+                        "itemsPerPage": self.settings["itemsPerPage"],
+                        "GPIOpins": self.settings["GPIOpins"]
+                    }
+
+        with open(self.settingsPath, 'w') as f:
+            json.dump(newSettings, f, ensure_ascii=False)
 
     def print_pins(self):
         """ prints all the GPIOpins that are used by the musicplayer app """

@@ -1,13 +1,11 @@
 {
-    "musicDir": "../../Music",
+    "musicDir": "/home/pi/Music",
     "lastDirPath": "musig/testPlaylist",
     "lastView": "directory",
     "lastpageNr": 1,
     "totalPages": 1,
     "lastSelected": 0,
     "volume": 60,
-    "songInterruptTime": 0,
-    "lastVisibleList": ["1","2","3"],
     "itemsPerPage": 6,
     "GPIOpins":
     {
@@ -16,7 +14,7 @@
         "PLAY_PAUSE_BUTTON_PIN": 16,
         "CLOCK_PIN": 27,
         "DATA_PIN": 6,
-        "LOW_BATTERY_PIN": 15,
+        "LOW_BATTERY_PIN": 13,
         "SHUTDOWN_SWITCH_PIN": 5
     }
 }
