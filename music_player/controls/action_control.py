@@ -45,7 +45,12 @@ class Action_Control(object):
         self.play_pause_button.start()
         self.next_song_button.start()
         self.previous_song_button.start()
-        self.battery_control.start()
+
+        #Checks the states of the Pins on startup because only changes are detected
+        switchPin, lowBatteryPin = self.battery_control.start()
+        if switchPin == 0 or lowBatteryPin == 1:
+            self.state.lowBattery = True if lowBatteryPin == 1 else False
+            self.terminate_loop()
 
     def stop(self):
         self.volume_control_dial.stop()
@@ -62,69 +67,52 @@ class Action_Control(object):
 
         if pinNr in self.state.buttonPinStates:
 
-            if self.state.buttonPinStates[pinNr] ==  timedelta(0) and clicked:
+            if self.state.buttonPinStates[pinNr] == timedelta(0) and clicked:
                 self.state.buttonPinStates[pinNr] = datetime.now()
 
-            if not clicked:
+            timeElapsed = (datetime.now() - self.state.buttonPinStates[pinNr]).seconds
+            if clicked:
+                if timeElapsed >= self.longPushTime:
+                    self.determin_push_action(pinNr, True)
+                    sleep(1)
+            else:
+                if timeElapsed < self.longPushTime:
+                    self.determin_push_action(pinNr)
                 self.state.buttonPinStates[pinNr] = timedelta(0)
         else:
             print("pin not initialized!")
 
-        self.determin_push_action()
+        #print(pinNr, self.currentlyPressed[pinNr]["start"], clicked)
 
-        """print("next "+str(self.timeElapsed(self.state.buttonPinStates[26])),
-            "| previous "+str(self.timeElapsed(self.state.buttonPinStates[20])),
-            "| playpause: "+ str(self.timeElapsed(self.state.buttonPinStates[16])))
-"""
-    def timeElapsed(self, startingTime):
-        if startingTime == timedelta(0):
-            return -1
-        else:
-            return (datetime.now() - startingTime).seconds
-
-    def determin_push_action(self, pinNr=None, longPush=False):
+    def determin_push_action(self, pinNr, longPush=False):
         """
             This is the callback function for all the buttons. It is necessary
             to have this to detect when two buttons are pressed simultanously
-
         """
-        currentlyPressed = []
-        for pinNr in self.state.buttonPinStates:
-            #print("%i: %i" %(pinNr, self.timeElapsed(v)))
+        if longPush:
+            if pinNr == self.next_song_button.bttn:
+                self.song_control.fast_forward()
+            elif pinNr == self.previous_song_button.bttn:
+                self.song_control.rewind()
+            elif pinNr == self.play_pause_button.bttn:
+                #self.song_control.play_pause()
+                print(self.list_visual.up())
+        else:
+            if pinNr == self.next_song_button.bttn:
+                #self.song_control.next_song()
+                self.list_visual.select(nextEntry = True)
+            if pinNr == self.previous_song_button.bttn:
+                #self.song_control.previous_song()
+                self.list_visual.select(nextEntry = False)
 
-            if self.timeElapsed(self.state.buttonPinStates[pinNr]) != -1:
-                currentlyPressed.append(pinNr)
-
-        """if len(currentlyPressed) > 1:
-            #giving all the simultanously pushed buttons the same starting time
-            pushTime = self.timeElapsed(self.state.buttonPinStates[currentlyPressed[0]])
-            for i in range(len(currentlyPressed)):
-                self.state.buttonPinStates[currentlyPressed[i]] = pushTime
-
-                print("two buttons pressed!")"""
-        if len(currentlyPressed) == 1:
-            pinNr = currentlyPressed[0]
-            pushTime = self.timeElapsed(self.state.buttonPinStates[pinNr])
-            if pushTime > 1:
-                if pinNr == self.next_song_button.bttn:
-                    self.song_control.fast_forward()
-                elif pinNr == self.previous_song_button.bttn:
-                    self.song_control.rewind()
-                elif pinNr == self.play_pause_button.bttn:
-                    #self.song_control.play_pause()
-                    print(self.list_visual.up())
-            else:
-                if pinNr == self.next_song_button.bttn:
-                    #self.song_control.next_song()
-                    self.list_visual.select(nextEntry = True)
-                if pinNr == self.previous_song_button.bttn:
-                    #self.song_control.previous_song()
-                    self.list_visual.select(nextEntry = False)
-                if pinNr == self.play_pause_button.bttn:
+            if pinNr == self.play_pause_button.bttn:
+                if self.state.currentView == "playlist":
                     self.song_control.play_pause()
-                    print(self.list_visual.down())
+                else:
+                    self.list_visual.down()
 
         self.state.update()
+
 
     """def handleKeyInputs(self):
         inpt = raw_input()

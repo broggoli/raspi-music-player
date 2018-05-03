@@ -65,10 +65,11 @@ class Music_player(object):
         os.system("sudo wall 'System shutting down'")
 
         if self.state.lowBattery:
-            self.view.lowBatteryDisplay()
+            self.view.low_battery_display()
             lowBatteryText = " -> lowBattery"
         else:
             lowBatteryText = ""
+            self.view.shut_down_display()
 
         msg = time.strftime("User Request - Shutting down at %a, %d %b %Y %H:%M:%S +0000\n", time.gmtime())
         msg += lowBatteryText

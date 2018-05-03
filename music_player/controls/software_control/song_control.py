@@ -9,11 +9,11 @@ class Song_Control(object):
 
     def play_pause(self):
         if self.state.play:
-            print("Play!")
-            self.state.play = True
-        else:
             print("Pause!")
             self.state.play = False
+        else:
+            print("Play!")
+            self.state.play = True
 
         os.system("mpc toggle")
 

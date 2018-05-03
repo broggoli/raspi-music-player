@@ -133,6 +133,16 @@ class Scroll_Bar(Window):
     def calculate_height(self):
         return (self.sizeY - 2 * self.margin) / self.totalPages
 
+class Play_State(Window):
+    def __init__(self, size, position):
+        super(Volume_View, self).__init__(size, position)
+
+    def get_image(self, play):
+        if play:
+            return Image.open('/home/pi/raspi-music-player/bitmaps/play.bmp')
+        else:
+            return Image.open('/home/pi/raspi-music-player/bitmaps/pause.bmp')
+
 class Volume_View(Window):
     def __init__(self, size, position):
         super(Volume_View, self).__init__(size, position, fontSize=16)
@@ -159,7 +169,8 @@ class View(Display_Control):
         self.list_title = List_Title(size = (200, 20),  position = (0, 0))
         self.main_window = Main_Winow(size = (190, 125), position = (0, 19))
         self.scroll_bar = Scroll_Bar(size = (10, 126), position = (190, 18))
-        self.volume_view = Volume_View(size = (100, 20),  position = (0, 145))
+        self.play_state = Play_State(size = (16, 16), position = (2, 150))
+        self.volume_view = Volume_View(size = (120, 20),  position = (25, 145))
         self.page_counter = Page_Counter(size = (50, 20), position = (170, 150))
 
         #Handles the lists that need to be displayed
@@ -186,18 +197,20 @@ class View(Display_Control):
         vl, ch  =   self.lastState.currentlyVisibleList, self.lastState.currentlyHighlighted
         cv, ln  =   self.lastState.currentView, self.lastState.currentListName
         volume  =   self.lastState.currentVolume
+        playState = self.lastState.play
 
         #print(vl, ch, scrollInfo, volume)
         imageList = [
                         (self.list_title.get_image(ln), self.list_title.position),
                         (self.main_window.get_image(vl, ch, cv), self.main_window.position),
                         (self.scroll_bar.get_image(scrollInfo), self.scroll_bar.position),
+                        (self.play_state.get_image(playState), self.play_state.position)
                         (self.volume_view.get_image(volume), self.volume_view.position),
                         (self.page_counter.get_image(scrollInfo), self.page_counter.position)
                     ]
         self.paint(imageList)
 
-    def lowBatteryDisplay(self):
+    def low_battery_display(self):
         self.draw_partial(self.lowBatteryImage, 0, 32)
 
     def shut_down_display(self):

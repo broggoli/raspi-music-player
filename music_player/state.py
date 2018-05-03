@@ -34,7 +34,7 @@ class State(object):
         self.displayed = False
 
         #define
-        self.play = "False"
+        self.play = False
 
     def update(self):
         self.displayed = False

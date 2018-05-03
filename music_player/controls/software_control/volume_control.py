@@ -24,7 +24,7 @@ class Volume_Control(object):
 
     def change_volume(self, clockwise, adjustment_step = 5):
         #If the direction is clockwise -> True -> increase Volume, else decrease Volume
-
+        
         if clockwise:
             vol = self.volume + adjustment_step
         else:
@@ -49,7 +49,7 @@ class Volume_Control(object):
             self.callback(volume = self.volume)
 
     def set_volume(self, vol):
-        print("setting volume!")
+        #print("setting volume:"+str(vol))
         self.volume = vol
         self.state.currentVolume = self.volume
         os.system("mpc volume %i" %self.volume)

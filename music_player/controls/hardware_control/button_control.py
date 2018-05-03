@@ -22,6 +22,7 @@ class Button_Control(object):
         self.longClickCallback = longClickCallback
         #setting the GPIO pins up
         GPIO.setmode(GPIO.BCM)
+
         if self.pullDown:
             upOrDown = GPIO.PUD_DOWN
         else:
@@ -61,7 +62,7 @@ class Button_Control(object):
                 self.callback(self.bttn, False)
         self.threadCounter -= 1
 
-    def long_sort_push_callback(self, longPushTime = 1):
+    """def long_sort_push_callback(self, longPushTime = 1):
 
         inpt = GPIO.input(self.bttn)
         self.pressed = (self.pullDown and inpt == 1) or (not self.pullDown and inpt == 0)
@@ -87,4 +88,4 @@ class Button_Control(object):
             else:
                 print("No long click callback defined!")
                 self.callback(self.bttn, False)
-        self.threadCounter -= 1
+        self.threadCounter -= 1"""

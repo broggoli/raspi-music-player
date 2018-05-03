@@ -164,7 +164,7 @@ class List_Visual(object):
         l = self.dir_list.get_top_branches()
         if "songs" in l and len(l) <= 2:
             songNames, songPaths = self.dir_list.get_songs(getNames=True, getPaths=True)
-            
+
             for s in songPaths:
                 os.system("mpc add \""+s+"\"")
 
@@ -229,8 +229,6 @@ class List_Visual(object):
                 self.dir_list.moveOneDown(directory)
                 self.setupNewList(0)
                 return "moved Down"
-            else:
-                return "Play"
     def up(self):
         if self.state.currentView == "playlist":
             self.state.currentView == "directory"
@@ -239,7 +237,6 @@ class List_Visual(object):
         dirIndex = 0
         self.dir_list.moveOneUp()
         self.setupNewList(dirIndex)
-        return "Pause"
 
     def setupNewList(self, selected):
         self.state.currentDirPath = self.dir_list.pathToCurrentDir

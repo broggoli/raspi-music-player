@@ -39,6 +39,9 @@ class Battery_Control():
         GPIO.add_event_detect(self.shutdown_pin, GPIO.FALLING, callback=self._callback, bouncetime=300)
         GPIO.add_event_detect(self.low_battery_pin, GPIO.FALLING, callback=self._callback, bouncetime=300)
 
+        #Returns the State of the shut down switch and the low battery pin on startup
+        return (GPIO.input(self.shutdown_pin), GPIO.input(self.low_battery_pin))
+
     def stop(self):
         # create a trigger for the shutdown switch and low battery pins
         GPIO.remove_event_detect(self.shutdown_pin)
